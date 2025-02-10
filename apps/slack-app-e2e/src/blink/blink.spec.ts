@@ -3,7 +3,7 @@ import { join } from 'path';
 
 describe('CLI tests', () => {
   it('should print a message', () => {
-    const cliPath = join(process.cwd(), 'dist/apps/blink');
+    const cliPath = join(process.cwd(), 'dist/apps/slack-app');
 
     const output = execSync(`node ${cliPath}`).toString();
 

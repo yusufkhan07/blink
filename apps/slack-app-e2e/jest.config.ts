@@ -1,5 +1,5 @@
 export default {
-  displayName: 'blink-e2e',
+  displayName: 'slack-app-e2e',
   preset: '../../jest.preset.js',
   setupFiles: ['<rootDir>/src/test-setup.ts'],
   testEnvironment: 'node',
@@ -12,5 +12,5 @@ export default {
     ],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/blink-e2e',
+  coverageDirectory: '../../coverage/slack-app-e2e',
 };

@@ -1,7 +1,7 @@
 {
-  "name": "blink",
+  "name": "slack-app",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/blink/src",
+  "sourceRoot": "apps/slack-app/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -11,12 +11,12 @@
       "defaultConfiguration": "production",
       "options": {
         "platform": "node",
-        "outputPath": "dist/apps/blink",
+        "outputPath": "dist/apps/slack-app",
         "format": ["cjs"],
         "bundle": false,
-        "main": "apps/blink/src/main.ts",
-        "tsConfig": "apps/blink/tsconfig.app.json",
-        "assets": ["apps/blink/src/assets"],
+        "main": "apps/slack-app/src/main.ts",
+        "tsConfig": "apps/slack-app/tsconfig.app.json",
+        "assets": ["apps/slack-app/src/assets"],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,
@@ -43,15 +43,15 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "blink:build",
+        "buildTarget": "slack-app:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "blink:build:development"
+          "buildTarget": "slack-app:build:development"
         },
         "production": {
-          "buildTarget": "blink:build:production"
+          "buildTarget": "slack-app:build:production"
         }
       }
     },
@@ -62,7 +62,7 @@
     },
     "docker-build": {
       "dependsOn": ["build"],
-      "command": "docker build -f apps/blink/Dockerfile . -t blink"
+      "command": "docker build -f apps/slack-app/Dockerfile . -t blink"
     }
   }
 }
