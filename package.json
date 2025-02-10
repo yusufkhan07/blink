@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@slack/bolt": "^4.2.0",
     "axios": "^1.6.0"
   },
   "devDependencies": {
