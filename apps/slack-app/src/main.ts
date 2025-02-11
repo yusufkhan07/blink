@@ -1,4 +1,4 @@
-const { App } = require('@slack/bolt');
+import { App } from '@slack/bolt';
 
 console.log(process.env);
 
