@@ -1,4 +1,8 @@
 import { App } from '@slack/bolt';
+import { configureCommands } from './commands';
+
+// TODO: setup prettier
+// TODO: setup vs code auto formatting on save
 
 console.log(process.env);
 
@@ -8,11 +12,7 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-// Listens to incoming messages that contain "hello"
-app.message('hello', async ({ message, say }) => {
-  // say() sends a message to the channel where the event was triggered
-  await say(`Hey there <@${message.channel}>!`);
-});
+configureCommands(app);
 
 (async () => {
   // Start your app
