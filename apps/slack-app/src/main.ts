@@ -4,7 +4,13 @@ import { configureCommands } from './commands';
 // TODO: setup prettier
 // TODO: setup vs code auto formatting on save
 
-console.log(process.env);
+// Feature 1: 
+// User types /blink message 
+// It's displayed ONCE for EACH User in Chat
+
+// Feature 2:
+// User types /blink message expiry 1 hour
+// It expires after 1 hour.
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
