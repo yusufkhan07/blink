@@ -8,102 +8,104 @@ export const configureCommands = (app: App<StringIndexed>) => {
   });
 
   // This echos back the input
-  app.command(
-    '/blink',
-    async ({ command, ack, respond }) => {
-      await ack();
+  app.command('/blink', async ({ command, ack, respond, logger }) => {
+    await ack();
 
-      // TODO: This should be fetched from settings instead of hard coding it.
-      const expirationTimeInSecs = 120; // Set expiration time in seconds (e.g., 1 hour)
+    // TODO: This should be fetched from settings instead of hard coding it.
+    const expirationTimeInSecs = 1; // Set expiration time in seconds (e.g., 1 hour)
 
-      // Calculate expiration timestamp
-      const expirationTimestamp =
-        Math.floor(Date.now() / 1000) + expirationTimeInSecs;
+    // Calculate expiration timestamp
+    const expirationTimestamp =
+      Math.floor(Date.now() / 1000) + expirationTimeInSecs;
 
-      try {
-        const postedMessage = await app.client.chat.postMessage({
-          attachments: [],
-          channel: command.channel_id,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
-              },
-            },
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `${command.text}`,
-              },
-            },
-            {
-              type: 'divider',
-            },
-            {
-              type: 'context',
-              elements: [
-                {
-                  type: 'mrkdwn',
-                  text: `:hourglass: Expires <!date^${expirationTimestamp}^{date} at {time}|${new Date(
-                    expirationTimestamp * 1000
-                  ).toLocaleString()}> | :alarm_clock: *Time remaining*: ${formatTimeRemaining(
-                    expirationTimeInSecs
-                  )}`,
-                },
-              ],
-            },
-          ],
-          text: `:lock: <@${command.user_id}> sent this disappearing message using blink`,
-        });
-
-        // TODO: Use a proper scheduler
-        // Hides a message after given time
-        setTimeout(async () => {
-          try {
-            await app.client.chat.update({
-              ts: postedMessage.ts,
-              channel: command.channel_id,
-              blocks: [
-                {
-                  type: 'section',
-                  text: {
-                    type: 'mrkdwn',
-                    text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
-                  },
-                },
-                {
-                  type: 'section',
-                  text: {
-                    type: 'mrkdwn',
-                    text: `_This message expired at <!date^${expirationTimestamp}^{date} at {time}|${new Date(
-                        expirationTimestamp * 1000
-                      ).toLocaleString()}>_`,
-                  },
-                }
-              ],
+    try {
+      const postedMessage = await app.client.chat.postMessage({
+        attachments: [],
+        channel: command.channel_id,
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
               text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
-            });
+            },
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `${command.text}`,
+            },
+          },
+          {
+            type: 'divider',
+          },
+          {
+            type: 'context',
+            elements: [
+              {
+                type: 'mrkdwn',
+                text: `:hourglass: Expires <!date^${expirationTimestamp}^{date} at {time}|${new Date(
+                  expirationTimestamp * 1000
+                ).toLocaleString()}> | :alarm_clock: *Time remaining*: ${formatTimeRemaining(
+                  expirationTimeInSecs
+                )}`,
+              },
+            ],
+          },
+        ],
+        text: `:lock: <@${command.user_id}> sent this disappearing message using blink`,
+      });
+
+      // TODO: Use a proper scheduler
+      // Hides a message after given time
+      console.log('setting timeout');
+      await new Promise((resolve) => {
+        setTimeout(async () => {
+          console.log('running timeout');
+          try {
+            // await app.client.chat.update({
+            //   ts: postedMessage.ts,
+            //   channel: command.channel_id,
+            //   blocks: [
+            //     {
+            //       type: 'section',
+            //       text: {
+            //         type: 'mrkdwn',
+            //         text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
+            //       },
+            //     },
+            //     {
+            //       type: 'section',
+            //       text: {
+            //         type: 'mrkdwn',
+            //         text: `_This message expired at <!date^${expirationTimestamp}^{date} at {time}|${new Date(
+            //           expirationTimestamp * 1000
+            //         ).toLocaleString()}>_`,
+            //       },
+            //     },
+            //   ],
+            //   text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
+            // });
           } catch (error) {
             console.error('Error updating message:', error);
           }
-        }, expirationTimeInSecs * 1000); 
-      } catch (err) {
-        // TODO: send this error before trying to post the message. 
-        // Figure out a way to check permissions of the given channel
-        if(err.data.error === "channel_not_found") {
-            respond({
-                response_type: "ephemeral",
-                text: "Please invite Blink to this private/shared channel before using it."
-            })
-        }
-
-        console.log(err);
+          resolve(null);
+        }, expirationTimeInSecs * 1);
+      });
+    } catch (err) {
+      // TODO: send this error before trying to post the message.
+      // Figure out a way to check permissions of the given channel
+      if (err.data.error === 'channel_not_found') {
+        respond({
+          response_type: 'ephemeral',
+          text: 'Please invite Blink to this private/shared channel before using it.',
+        });
       }
+
+      console.log(err);
     }
-  );
+  });
 
   // creates a test modal
   app.command('/blinkmodaltest', async ({ ack, body, client, logger }) => {
