@@ -32,6 +32,7 @@
     "ngrok": "^5.0.0-beta.2",
     "nx": "20.4.2",
     "prettier": "^2.6.2",
+    "serverless-offline": "^14.4.0",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",

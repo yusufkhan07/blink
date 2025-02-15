@@ -39,20 +39,17 @@
       }
     },
     "serve": {
-      "executor": "@nx/js:node",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "slack-app:build",
-        "runBuildTargetDependencies": false
+        "cwd": "apps/slack-app"
       },
       "configurations": {
         "development": {
-          "buildTarget": "slack-app:build:development"
+          "command": "serverless offline --noPrependStageInUrl"
         },
-        "production": {
-          "buildTarget": "slack-app:build:production"
-        }
+        "production": {}
       }
     },
     "test": {
