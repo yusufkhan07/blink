@@ -36,6 +36,5 @@
       },
       "exclude": ["apps/slack-app-e2e/**/*"]
     }
-  ],
-  "neverConnectToCloud": true
+  ]
 }
