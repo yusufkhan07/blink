@@ -41,15 +41,13 @@
     "serve": {
       "executor": "nx:run-commands",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
       "options": {
         "cwd": "apps/slack-app"
       },
       "configurations": {
         "development": {
           "command": "serverless offline --noPrependStageInUrl"
-        },
-        "production": {}
+        }
       }
     },
     "test": {
