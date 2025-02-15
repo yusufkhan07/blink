@@ -50,6 +50,18 @@
         }
       }
     },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "defaultConfiguration": "production",
+      "options": {
+        "cwd": "apps/slack-app"
+      },
+      "configurations": {
+        "production": {
+          "command": "serverless deploy --stage production"
+        }
+      }
+    },
     "test": {
       "options": {
         "passWithNoTests": true
