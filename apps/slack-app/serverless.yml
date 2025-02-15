@@ -4,6 +4,7 @@ provider:
   name: aws
   region: us-east-1
   runtime: nodejs20.x
+  # TODO: find a way so that we don't need to pass these variables
   environment:
     SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
     SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
