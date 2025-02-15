@@ -1,4 +1,4 @@
-import { App, AwsLambdaReceiver } from '@slack/bolt';
+import { App, AwsLambdaReceiver, LogLevel } from '@slack/bolt';
 import { configureCommands } from './commands';
 
 // TODO: setup prettier
@@ -19,6 +19,7 @@ const awsLambdaReceiver = new AwsLambdaReceiver({
 // Initializes your app with your bot token and signing secret
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
+  logLevel: LogLevel.DEBUG,
   receiver: awsLambdaReceiver
 });
 
