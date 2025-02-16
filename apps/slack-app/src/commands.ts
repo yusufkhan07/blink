@@ -1,5 +1,9 @@
 import { App, StringIndexed } from '@slack/bolt';
 
+const scheduleMessageExpiry = async() => {
+  // TODO: How to do this so it works on serverless locally and the cloud as well.
+}
+
 export const configureCommands = (app: App<StringIndexed>) => {
   // Listens to incoming messages that contain "hello"
   app.message('hello', async ({ message, say }) => {
@@ -57,46 +61,11 @@ export const configureCommands = (app: App<StringIndexed>) => {
         text: `:lock: <@${command.user_id}> sent this disappearing message using blink`,
       });
 
-      // TODO: Use a proper scheduler
-      // Hides a message after given time
-      console.log('setting timeout');
-      await new Promise((resolve) => {
-        setTimeout(async () => {
-          console.log('running timeout');
-          try {
-            // await app.client.chat.update({
-            //   ts: postedMessage.ts,
-            //   channel: command.channel_id,
-            //   blocks: [
-            //     {
-            //       type: 'section',
-            //       text: {
-            //         type: 'mrkdwn',
-            //         text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
-            //       },
-            //     },
-            //     {
-            //       type: 'section',
-            //       text: {
-            //         type: 'mrkdwn',
-            //         text: `_This message expired at <!date^${expirationTimestamp}^{date} at {time}|${new Date(
-            //           expirationTimestamp * 1000
-            //         ).toLocaleString()}>_`,
-            //       },
-            //     },
-            //   ],
-            //   text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
-            // });
-          } catch (error) {
-            console.error('Error updating message:', error);
-          }
-          resolve(null);
-        }, expirationTimeInSecs * 1);
-      });
+      await scheduleMessageExpiry();
     } catch (err) {
       // TODO: send this error before trying to post the message.
       // Figure out a way to check permissions of the given channel
-      if (err.data.error === 'channel_not_found') {
+      if (err.data?.error === 'channel_not_found') {
         respond({
           response_type: 'ephemeral',
           text: 'Please invite Blink to this private/shared channel before using it.',
