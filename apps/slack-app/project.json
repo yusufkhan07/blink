@@ -57,6 +57,9 @@
         "cwd": "apps/slack-app"
       },
       "configurations": {
+        "development": {
+          "command": "serverless deploy --stage development"
+        },
         "production": {
           "command": "serverless deploy --stage production"
         }
