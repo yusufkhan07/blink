@@ -17,6 +17,12 @@ functions:
           method: post
     environment:
       MessageExpirationHandlerStateMachineArn: ${self:resources.Outputs.MessageExpirationHandlerStateMachine.Value}
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "states:StartExecution"
+        Resource:
+          - Ref: MessageExpirationHandlerStateMachine
   message-expiration-handler:
     handler: src/message-expiration-handler.handler
 
