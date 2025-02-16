@@ -46,7 +46,7 @@
       },
       "configurations": {
         "development": {
-          "command": "serverless offline start --noPrependStageInUrl --reloadHandler --noTimeout"
+          "command": "serverless offline start --stage development --noPrependStageInUrl --reloadHandler --noTimeout"
         }
       }
     },
