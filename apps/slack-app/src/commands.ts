@@ -1,8 +1,20 @@
 import { App, StringIndexed } from '@slack/bolt';
+import AWS from 'aws-sdk';
+import { MessageExpirationHandlerStateMachineInput } from './types';
+const stepfunctions = new AWS.StepFunctions();
 
-const scheduleMessageExpiry = async() => {
-  // TODO: How to do this so it works on serverless locally and the cloud as well.
-}
+const scheduleMessageExpiry = async (
+  messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput
+) => {
+  const stateMachineArn = process.env.MessageExpirationHandlerStateMachineArn;
+  
+  await stepfunctions
+    .startExecution({
+      stateMachineArn,
+      input: JSON.stringify(messageExpirationHandlerStateMachineInput),
+    })
+    .promise();
+};
 
 export const configureCommands = (app: App<StringIndexed>) => {
   // Listens to incoming messages that contain "hello"
@@ -16,10 +28,10 @@ export const configureCommands = (app: App<StringIndexed>) => {
     await ack();
 
     // TODO: This should be fetched from settings instead of hard coding it.
-    const expirationTimeInSecs = 1; // Set expiration time in seconds (e.g., 1 hour)
+    const expirationTimeInSecs = 30; // Set expiration time in seconds (e.g., 1 hour)
 
     // Calculate expiration timestamp
-    const expirationTimestamp =
+    const expirationTimestampInSecs =
       Math.floor(Date.now() / 1000) + expirationTimeInSecs;
 
     try {
@@ -49,8 +61,8 @@ export const configureCommands = (app: App<StringIndexed>) => {
             elements: [
               {
                 type: 'mrkdwn',
-                text: `:hourglass: Expires <!date^${expirationTimestamp}^{date} at {time}|${new Date(
-                  expirationTimestamp * 1000
+                text: `:hourglass: Expires <!date^${expirationTimestampInSecs}^{date} at {time}|${new Date(
+                  expirationTimestampInSecs * 1000
                 ).toLocaleString()}> | :alarm_clock: *Time remaining*: ${formatTimeRemaining(
                   expirationTimeInSecs
                 )}`,
@@ -61,7 +73,12 @@ export const configureCommands = (app: App<StringIndexed>) => {
         text: `:lock: <@${command.user_id}> sent this disappearing message using blink`,
       });
 
-      await scheduleMessageExpiry();
+      await scheduleMessageExpiry({
+        expireAt: new Date(expirationTimestampInSecs * 1000).toISOString(),
+        ts: postedMessage.ts,
+        channel_id: command.channel_id,
+        user_id: command.user_id,
+      });
     } catch (err) {
       // TODO: send this error before trying to post the message.
       // Figure out a way to check permissions of the given channel

@@ -9,11 +9,43 @@ provider:
     SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
     SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
 functions:
-  slack:
+  main:
     handler: src/main.handler
     events:
       - http:
           path: slack/events
           method: post
+    environment:
+      MessageExpirationHandlerStateMachineArn: ${self:resources.Outputs.MessageExpirationHandlerStateMachine.Value}
+  message-expiration-handler:
+    handler: src/message-expiration-handler.handler
+
+stepFunctions:
+  stateMachines:
+    MessageExpirationHandlerStateMachine:
+      name: MessageExpirationHandlerStateMachine
+      definition:
+        Comment: "Schedules a job at a future date"
+        StartAt: WaitForDueDateTime
+        States:
+          WaitForDueDateTime:
+            Type: Wait
+            TimestampPath: "$.expireAt"
+            Next: HideMessage
+          HideMessage:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [message-expiration-handler, Arn]
+            End: true
+
+resources:
+  Outputs:
+    MessageExpirationHandlerStateMachine:
+      Description: The ARN of the StateMachine which hides expired slack messages
+      Value:
+        Ref: MessageExpirationHandlerStateMachine
+
 plugins:
+  - serverless-export-env
+  - serverless-step-functions
   - serverless-offline
