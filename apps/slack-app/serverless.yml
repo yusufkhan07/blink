@@ -8,6 +8,13 @@ provider:
   environment:
     SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
     SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "states:StartExecution"
+          Resource: "*"
 functions:
   main:
     handler: src/main.handler
@@ -17,12 +24,6 @@ functions:
           method: post
     environment:
       MessageExpirationHandlerStateMachineArn: ${self:resources.Outputs.MessageExpirationHandlerStateMachine.Value}
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "states:StartExecution"
-        Resource:
-          - Ref: MessageExpirationHandlerStateMachine
   message-expiration-handler:
     handler: src/message-expiration-handler.handler
 
