@@ -19,8 +19,8 @@ provider:
           # https://serverlessfirst.com/serverless-email-scheduler/
           Resource: "*"
 functions:
-  main:
-    handler: src/main.handler
+  slack-events-handler:
+    handler: src/lambdas/slack-events-handler.handler
     events:
       - http:
           path: slack/events
@@ -28,7 +28,7 @@ functions:
     environment:
       MessageExpirationHandlerStateMachineArn: ${self:resources.Outputs.MessageExpirationHandlerStateMachine.Value}
   message-expiration-handler:
-    handler: src/message-expiration-handler.handler
+    handler: src/lambdas/message-expiration-handler.handler
 
 stepFunctions:
   stateMachines:

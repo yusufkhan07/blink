@@ -1,5 +1,5 @@
 import { App, AwsLambdaReceiver } from '@slack/bolt';
-import { configureCommands } from './commands';
+import { configureCommands } from '../commands';
 
 // TODO: setup prettier
 // TODO: setup vs code auto formatting on save
