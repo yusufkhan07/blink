@@ -23,7 +23,8 @@ functions:
 stepFunctions:
   stateMachines:
     MessageExpirationHandlerStateMachine:
-      name: MessageExpirationHandlerStateMachine
+      id: MessageExpirationHandlerStateMachine
+      name: MessageExpirationHandlerStateMachine-${opt:stage}
       definition:
         Comment: "Schedules a job at a future date"
         StartAt: WaitForDueDateTime
