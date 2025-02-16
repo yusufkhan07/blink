@@ -6,11 +6,11 @@ const stepfunctions = new AWS.StepFunctions();
 const scheduleMessageExpiry = async (
   messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput
 ) => {
-  const stateMachineArn = process.env.MessageExpirationHandlerStateMachineArn;
+  const messageExpirationHandlerStateMachineArn = process.env.MessageExpirationHandlerStateMachineArn;
   
   await stepfunctions
     .startExecution({
-      stateMachineArn,
+      stateMachineArn: messageExpirationHandlerStateMachineArn,
       input: JSON.stringify(messageExpirationHandlerStateMachineInput),
     })
     .promise();
