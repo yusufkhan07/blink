@@ -42,6 +42,6 @@ Thumbs.db
 .nx/workspace-data
 
 # exclude .env files
-.env.development
+.env.*
 
 .serverless
