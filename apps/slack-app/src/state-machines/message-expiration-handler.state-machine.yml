@@ -1,0 +1,15 @@
+id: MessageExpirationHandlerStateMachine
+name: MessageExpirationHandlerStateMachine-${opt:stage}
+definition:
+  Comment: "Schedules a job at a future date"
+  StartAt: WaitForDueDateTime
+  States:
+    WaitForDueDateTime:
+      Type: Wait
+      TimestampPath: "$.expireAt"
+      Next: HideMessage
+    HideMessage:
+      Type: Task
+      Resource:
+        Fn::GetAtt: [message-expiration-handler, Arn]
+      End: true
