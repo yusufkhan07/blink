@@ -1,4 +1,4 @@
-service: serverless-bolt-js
+service: blink-slack-app
 frameworkVersion: "4"
 provider:
   name: aws
