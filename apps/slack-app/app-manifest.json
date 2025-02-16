@@ -6,7 +6,7 @@
   },
   "features": {
     "bot_user": {
-      "display_name": "Blink App",
+      "display_name": "Blink (Development)",
       "always_online": false
     },
     "slash_commands": [
@@ -14,7 +14,7 @@
         "command": "/blink",
         "url": "https://overly-poetic-raven.ngrok-free.app/slack/events",
         "description": "Send a one-time or expiring message in Slack.",
-        "usage_hint": "your secermessage",
+        "usage_hint": "your secret message",
         "should_escape": false
       },
       {
