@@ -8,9 +8,11 @@
   "private": true,
   "dependencies": {
     "@slack/bolt": "^4.2.0",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.6.0"
   },
   "devDependencies": {
+    "@aws-sdk/types": "^3.734.0",
     "@eslint/js": "^9.8.0",
     "@nx/esbuild": "20.4.2",
     "@nx/eslint": "20.4.2",
@@ -32,7 +34,9 @@
     "ngrok": "^5.0.0-beta.2",
     "nx": "20.4.2",
     "prettier": "^2.6.2",
+    "serverless-export-env": "^2.2.0",
     "serverless-offline": "^14.4.0",
+    "serverless-step-functions": "^3.21.2",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
