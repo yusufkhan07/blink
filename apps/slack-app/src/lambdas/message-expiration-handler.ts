@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { MessageExpirationHandlerStateMachineInput } from '../types';
+import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
