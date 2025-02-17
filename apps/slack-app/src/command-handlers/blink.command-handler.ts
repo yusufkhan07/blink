@@ -17,12 +17,16 @@ const scheduleMessageExpiry = async (
   const messageExpirationHandlerStateMachineArn =
     process.env.MessageExpirationHandlerStateMachineArn;
 
-  await stepfunctions
+  // TODO: We are not awaiting this for now to avoid lambda cold start 3-secs timeout error.
+  stepfunctions
     .startExecution({
       stateMachineArn: messageExpirationHandlerStateMachineArn,
       input: JSON.stringify(messageExpirationHandlerStateMachineInput),
     })
-    .promise();
+    .promise()
+    .catch((err) => {
+      console.error(err);
+    });
 };
 
 const postNewMessage = async (
@@ -87,7 +91,11 @@ export const blinkCommandHandler = async (
   const expirationTimeInSecs = constants.defaultMessageExpiryInSecs;
 
   try {
-    const postedMessage = await postNewMessage(app, command, expirationTimeInSecs);
+    const postedMessage = await postNewMessage(
+      app,
+      command,
+      expirationTimeInSecs
+    );
 
     await scheduleMessageExpiry({
       expireAt: new Date(
