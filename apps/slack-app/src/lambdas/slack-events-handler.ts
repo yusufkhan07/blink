@@ -1,5 +1,6 @@
-import { App, AwsLambdaReceiver } from '@slack/bolt';
-import { configureCommands } from '../services/commands';
+import { App, AwsLambdaReceiver, StringIndexed } from '@slack/bolt';
+import { blinkCommandHandler } from '../command-handlers/blink.command-handler';
+import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest.command-handler';
 
 // TODO: setup prettier
 // TODO: setup vs code auto formatting on save
@@ -16,6 +17,18 @@ const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: awsLambdaReceiver,
 });
+
+export const configureCommands = (app: App<StringIndexed>) => {
+  app.message('hello', async ({ message, say }) => {
+    await say(`Hey there <@${message.channel}>!`);
+  });
+
+  app.command('/blink', async (params) => {
+    await blinkCommandHandler(app, params);
+  });
+
+  app.command('/blinkmodaltest', blinkmodaltestCommandHandler);
+};
 
 configureCommands(app);
 
