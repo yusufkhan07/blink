@@ -1,6 +1,9 @@
 import { ExpressReceiver, FileInstallationStore } from '@slack/bolt';
 import serverless from 'serverless-http';
 
+// TODO: figure out how oauth would work for org ready apps
+// Right now focusing on workspace level app
+
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   clientId: process.env.SLACK_CLIENT_ID,
