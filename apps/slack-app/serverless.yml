@@ -7,7 +7,10 @@ provider:
   # TODO: find a way so that we don't need to pass these variables
   environment:
     SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    # TODO: Remove the BOT Token from here and ci once oauth flow is done.
     SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
+    SLACK_CLIENT_ID: ${env:SLACK_CLIENT_ID}
+    SLACK_CLIENT_SECRET: ${env:SLACK_CLIENT_SECRET}
   iam:
     role:
       statements:
@@ -19,6 +22,15 @@ provider:
           # https://serverlessfirst.com/serverless-email-scheduler/
           Resource: "*"
 functions:
+  slack-install-handler:
+    handler: src/lambdas/slack-install-handler.handler
+    events:
+      - http:
+          path: slack/install
+          method: get
+      - http:
+          path: slack/oauth_redirect
+          method: get
   slack-events-handler:
     handler: src/lambdas/slack-events-handler.handler
     events:
