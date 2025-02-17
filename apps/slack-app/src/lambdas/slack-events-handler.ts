@@ -13,8 +13,7 @@ import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest
 
 const app = new App({
   receiver: expressReceiver,
-  // Required when using Express receiver
-  processBeforeResponse: true,
+  processBeforeResponse: false,
 });
 
 export const configureCommands = (app: App<StringIndexed>) => {
@@ -26,3 +25,5 @@ export const configureCommands = (app: App<StringIndexed>) => {
 configureCommands(app);
 
 module.exports.handler = serverless(expressReceiver.app);
+
+// TODO: a bug in prod: https://github.com/slackapi/bolt-js/issues/462
