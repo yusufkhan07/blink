@@ -11,6 +11,7 @@ provider:
     SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
     SLACK_CLIENT_ID: ${env:SLACK_CLIENT_ID}
     SLACK_CLIENT_SECRET: ${env:SLACK_CLIENT_SECRET}
+    SLACK_OAUTHTOKENS_TABLENAME: ${self:resources.Outputs.SlackOAuthTokensTableName.Value}
   iam:
     role:
       statements:
@@ -53,8 +54,7 @@ resources:
     SlackOAuthTokensTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        # Name should have stage!
-        TableName: SlackOAuthTokensTable
+        TableName: SlackOAuthTokensTable-${opt:stage}
         AttributeDefinitions:
           - AttributeName: teamId
             AttributeType: S
@@ -69,6 +69,9 @@ resources:
       Description: The ARN of the StateMachine which hides expired slack messages
       Value:
         Ref: MessageExpirationHandlerStateMachine
+    SlackOAuthTokensTableName:
+      Value:
+        Ref: SlackOAuthTokensTable
 
 plugins:
   - serverless-export-env
