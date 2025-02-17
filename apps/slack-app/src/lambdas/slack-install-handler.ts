@@ -1,6 +1,6 @@
 import { ExpressReceiver, InstallationStore } from '@slack/bolt';
 import serverless from 'serverless-http';
-import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-Tokens.repository';
+import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
 
 // TODO: figure out how oauth would work for org ready apps
 // Right now focusing on workspace level app
