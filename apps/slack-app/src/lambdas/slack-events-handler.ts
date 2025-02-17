@@ -1,4 +1,5 @@
-import { App, AwsLambdaReceiver, StringIndexed } from '@slack/bolt';
+import { App, ExpressReceiver, StringIndexed } from '@slack/bolt';
+import serverless from 'serverless-http';
 import { blinkCommandHandler } from '../command-handlers/blink.command-handler';
 import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest.command-handler';
 
@@ -9,13 +10,13 @@ import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest
 // User types /blink message
 // It's displayed ONCE for EACH User in Chat
 
-const awsLambdaReceiver = new AwsLambdaReceiver({
+const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  receiver: awsLambdaReceiver,
+  receiver: expressReceiver,
 });
 
 export const configureCommands = (app: App<StringIndexed>) => {
@@ -32,7 +33,4 @@ export const configureCommands = (app: App<StringIndexed>) => {
 
 configureCommands(app);
 
-module.exports.handler = async (event, context, callback) => {
-  const handler = await awsLambdaReceiver.start();
-  return handler(event, context, callback);
-};
+module.exports.handler = serverless(expressReceiver.app);
