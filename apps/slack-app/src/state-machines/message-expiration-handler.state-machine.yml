@@ -1,5 +1,6 @@
 id: MessageExpirationHandlerStateMachine
 name: MessageExpirationHandlerStateMachine-${opt:stage}
+# TODO: add retry / email for sending errors to
 definition:
   Comment: "Schedules a job at a future date"
   StartAt: WaitForDueDateTime

@@ -55,7 +55,7 @@ stepFunctions:
 
 resources:
   Resources:
-    # What happens if something changes here? is database wiped?
+    # TODO: What happens if something changes here? is database wiped? We need to protect data from deletion
     SlackOAuthTokensTable:
       Type: AWS::DynamoDB::Table
       Properties:
