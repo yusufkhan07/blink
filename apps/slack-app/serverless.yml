@@ -48,6 +48,22 @@ stepFunctions:
       ${file(src/state-machines/message-expiration-handler.state-machine.yml)}
 
 resources:
+  Resources:
+    # What happens if something changes here? is database wiped?
+    SlackOAuthTokensTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        # Name should have stage!
+        TableName: SlackOAuthTokensTable
+        AttributeDefinitions:
+          - AttributeName: teamId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: teamId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
   Outputs:
     MessageExpirationHandlerStateMachine:
       Description: The ARN of the StateMachine which hides expired slack messages

@@ -1,0 +1,47 @@
+import { Installation } from '@slack/bolt';
+import AWS from 'aws-sdk';
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+export class SlackOAuthTokensRepository {
+  private readonly tableName: string = 'SlackOAuthTokensTable';
+
+  storeInstallation = async (installation: Installation) => {
+    const params = {
+      TableName: this.tableName,
+      Item: {
+        teamId: installation.team.id,
+        ...installation,
+      },
+    };
+
+    await dynamoDb.put(params).promise();
+  };
+
+  fetchInstallation = async (teamId: string): Promise<Installation> => {
+    const result = await dynamoDb
+      .get({
+        TableName: this.tableName,
+        Key: {
+          teamId,
+        },
+      })
+      .promise();
+
+    if (!result.Item) {
+      throw new Error('Installation not found');
+    }
+
+    return result.Item as Installation;
+  };
+
+  deleteInstallation = async (teamId: string) => {
+    await dynamoDb
+      .delete({
+        TableName: this.tableName,
+        Key: {
+          teamId,
+        },
+      })
+      .promise();
+  };
+}
