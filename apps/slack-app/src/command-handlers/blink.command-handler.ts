@@ -17,16 +17,12 @@ const scheduleMessageExpiry = async (
   const messageExpirationHandlerStateMachineArn =
     process.env.MessageExpirationHandlerStateMachineArn;
 
-  // TODO: We are not awaiting this for now to avoid lambda cold start 3-secs timeout error.
-  stepfunctions
+  await stepfunctions
     .startExecution({
       stateMachineArn: messageExpirationHandlerStateMachineArn,
       input: JSON.stringify(messageExpirationHandlerStateMachineInput),
     })
-    .promise()
-    .catch((err) => {
-      console.error(err);
-    });
+    .promise();
 };
 
 const postNewMessage = async (
