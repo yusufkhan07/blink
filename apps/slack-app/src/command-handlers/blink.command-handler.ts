@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import { WebClient } from '@slack/web-api';
+import { Logger, WebClient } from '@slack/web-api';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
 import { formatTimeRemaining } from '../utils/formatTimeRemaining';
 import {
@@ -12,8 +12,11 @@ import { constants } from '../constants';
 const stepfunctions = new AWS.StepFunctions();
 
 const scheduleMessageExpiry = async (
-  messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput
+  messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput,
+  logger: Logger
 ) => {
+  logger.info("Scheduling message for expiry: ", messageExpirationHandlerStateMachineInput);
+
   const messageExpirationHandlerStateMachineArn =
     process.env.MessageExpirationHandlerStateMachineArn;
 
@@ -86,11 +89,15 @@ export const blinkCommandHandler = async ({
   const expirationTimeInSecs = constants.defaultMessageExpiryInSecs;
 
   try {
+    logger.info("Creating new message");
+
     const postedMessage = await postNewMessage(
       client,
       command,
       expirationTimeInSecs
     );
+
+    logger.info("Created new message");
 
     await scheduleMessageExpiry({
       expireAt: new Date(
@@ -100,7 +107,7 @@ export const blinkCommandHandler = async ({
       ts: postedMessage.ts,
       channel_id: command.channel_id,
       user_id: command.user_id,
-    });
+    }, logger);
   } catch (err) {
     // TODO: send this error before trying to post the message.
     // Figure out a way to check permissions of the given channel
