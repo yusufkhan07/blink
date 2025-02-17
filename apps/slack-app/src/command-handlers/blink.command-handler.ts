@@ -1,9 +1,9 @@
 import AWS from 'aws-sdk';
+import { WebClient } from '@slack/web-api';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
 import { formatTimeRemaining } from '../utils/formatTimeRemaining';
 import {
   AllMiddlewareArgs,
-  App,
   SlackCommandMiddlewareArgs,
   SlashCommand,
   StringIndexed,
@@ -26,7 +26,7 @@ const scheduleMessageExpiry = async (
 };
 
 const postNewMessage = async (
-  app: App<StringIndexed>,
+  client: WebClient,
   command: SlashCommand,
   expirationTimeInSecs: number
 ): Promise<any> => {
@@ -34,7 +34,7 @@ const postNewMessage = async (
   const expirationTimestampInSecs =
     Math.floor(Date.now() / 1000) + expirationTimeInSecs;
 
-  return await app.client.chat.postMessage({
+  return await client.chat.postMessage({
     attachments: [],
     channel: command.channel_id,
     blocks: [
@@ -73,22 +73,21 @@ const postNewMessage = async (
   });
 };
 
-export const blinkCommandHandler = async (
-  app: App<StringIndexed>,
-  {
-    command,
-    ack,
-    respond,
-    logger,
-  }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>
-) => {
+export const blinkCommandHandler = async ({
+  command,
+  ack,
+  respond,
+  logger,
+  client,
+}: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
   await ack();
+
   // TODO: This should be fetched from settings instead of hard coding it.
   const expirationTimeInSecs = constants.defaultMessageExpiryInSecs;
 
   try {
     const postedMessage = await postNewMessage(
-      app,
+      client,
       command,
       expirationTimeInSecs
     );
