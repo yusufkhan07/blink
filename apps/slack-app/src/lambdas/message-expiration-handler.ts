@@ -27,7 +27,7 @@ module.exports.handler = async (
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `_This message expired at <!date^${Math.floor(
+          text: `_This message expired on <!date^${Math.floor(
             Date.now() / 1000
           )}^{date} at {time}|${new Date(
             Math.floor(Date.now() / 1000) * 1000
