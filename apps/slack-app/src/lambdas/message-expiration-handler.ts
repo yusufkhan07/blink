@@ -4,12 +4,13 @@ import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.re
 
 const slackOAuthTokensRepository = new SlackOAuthTokensRepository();
 
-module.exports.handler = async (
+const hideMessage = async (
   event: MessageExpirationHandlerStateMachineInput
 ) => {
   const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
-    token: (await slackOAuthTokensRepository.fetchInstallation(event.team_id)).bot?.token,
+    token: (await slackOAuthTokensRepository.fetchInstallation(event.team_id))
+      .bot?.token,
   });
 
   await app.client.chat.update({
@@ -37,6 +38,12 @@ module.exports.handler = async (
     ],
     text: `:lock: _<@${event.user_id}> sent this disappearing message using blink_`,
   });
+};
+
+module.exports.handler = async (
+  event: MessageExpirationHandlerStateMachineInput
+) => {
+  await hideMessage(event);
 
   return {
     statusCode: 204,

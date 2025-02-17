@@ -31,6 +31,7 @@ export class SlackOAuthTokensRepository {
       throw new Error('Installation not found');
     }
 
+    // TODO: use plainToClass instead of casting it with "as"
     return result.Item as Installation;
   };
 
