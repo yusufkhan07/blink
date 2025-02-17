@@ -17,6 +17,8 @@ const expressReceiver = new ExpressReceiver({
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
+  // Required when using Express receiver
+  processBeforeResponse: true,
 });
 
 export const configureCommands = (app: App<StringIndexed>) => {
