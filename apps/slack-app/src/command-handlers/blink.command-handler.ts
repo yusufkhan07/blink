@@ -96,6 +96,7 @@ export const blinkCommandHandler = async ({
       expireAt: new Date(
         (Math.floor(Date.now() / 1000) + expirationTimeInSecs) * 1000
       ).toISOString(),
+      team_id: command.team_id,
       ts: postedMessage.ts,
       channel_id: command.channel_id,
       user_id: command.user_id,

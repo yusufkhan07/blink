@@ -1,14 +1,17 @@
 import { App } from '@slack/bolt';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
+import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
 
-const app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
+const slackOAuthTokensRepository = new SlackOAuthTokensRepository();
 
 module.exports.handler = async (
   event: MessageExpirationHandlerStateMachineInput
 ) => {
+  const app = new App({
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+    token: (await slackOAuthTokensRepository.fetchInstallation(event.team_id)).bot?.token,
+  });
+
   await app.client.chat.update({
     ts: event.ts,
     channel: event.channel_id,
