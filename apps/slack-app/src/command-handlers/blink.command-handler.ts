@@ -109,6 +109,8 @@ export const blinkCommandHandler = async ({
       user_id: command.user_id,
     }, logger);
   } catch (err) {
+    logger.error(err);
+    
     // TODO: send this error before trying to post the message.
     // Figure out a way to check permissions of the given channel
     if (err.data?.error === 'channel_not_found') {
