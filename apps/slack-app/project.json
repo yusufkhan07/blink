@@ -14,7 +14,7 @@
         "outputPath": "dist/apps/slack-app",
         "format": ["cjs"],
         "bundle": false,
-        "main": "apps/slack-app/src/lambdas/slack-events-handler.ts",
+        "main": "apps/slack-app/src/main.ts",
         "tsConfig": "apps/slack-app/tsconfig.app.json",
         "assets": ["apps/slack-app/src/assets"],
         "generatePackageJson": true,
