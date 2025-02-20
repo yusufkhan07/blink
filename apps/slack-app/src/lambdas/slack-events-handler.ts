@@ -29,4 +29,6 @@ module.exports.handler = async (event, context) => {
   return result;
 };
 
+// TODO: Fix cold starts, taking more than 3 secs by reducing bundle size
+
 // TODO: a bug in prod: https://github.com/slackapi/bolt-js/issues/462
