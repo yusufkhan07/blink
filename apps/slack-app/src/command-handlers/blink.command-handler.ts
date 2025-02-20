@@ -77,12 +77,14 @@ const postNewMessage = async (
 };
 
 export const blinkCommandHandler = async ({
-  command,
   ack,
+  command,
   respond,
   logger,
   client,
 }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
+  logger.info("blink command handler started execution");
+
   await ack();
 
   // TODO: This should be fetched from settings instead of hard coding it.

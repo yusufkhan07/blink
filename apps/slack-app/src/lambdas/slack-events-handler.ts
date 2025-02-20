@@ -12,8 +12,7 @@ import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest
 // It's displayed ONCE for EACH User in Chat
 
 const app = new App({
-  receiver: expressReceiver,
-  processBeforeResponse: false,
+  receiver: expressReceiver
 });
 
 export const configureCommands = (app: App<StringIndexed>) => {
@@ -24,6 +23,10 @@ export const configureCommands = (app: App<StringIndexed>) => {
 
 configureCommands(app);
 
-module.exports.handler = serverless(expressReceiver.app);
+const handler = serverless(expressReceiver.app);
+module.exports.handler = async (event, context) => {
+  const result = await handler(event, context);
+  return result;
+};
 
 // TODO: a bug in prod: https://github.com/slackapi/bolt-js/issues/462

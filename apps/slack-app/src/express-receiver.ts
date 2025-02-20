@@ -25,6 +25,7 @@ export const expressReceiver = new ExpressReceiver({
   clientId: process.env.SLACK_CLIENT_ID,
   clientSecret: process.env.SLACK_CLIENT_SECRET,
   stateSecret: 'SLACK_STATE_SECRET',
+  processBeforeResponse: true,
   // TODO: load from manifest file
   scopes: ['chat:write', 'chat:write.public', 'commands'],
   installerOptions: {
