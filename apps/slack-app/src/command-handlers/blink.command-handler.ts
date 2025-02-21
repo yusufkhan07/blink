@@ -116,7 +116,7 @@ export const blinkCommandHandler = async ({
     // TODO: send this error before trying to post the message.
     // Figure out a way to check permissions of the given channel
     if (err.data?.error === 'channel_not_found') {
-      respond({
+      await respond({
         response_type: 'ephemeral',
         text: 'Please invite Blink to this private/shared channel before using it.',
       });
