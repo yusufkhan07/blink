@@ -25,6 +25,16 @@ configureCommands(app);
 
 const handler = serverless(expressReceiver.app);
 module.exports.handler = async (event, context) => {
+  // Check if this is a warm-up request
+  if (event.source === 'aws.events') {
+    console.log('Warm-up request received. Keeping the Lambda warm.');
+    
+    return {
+      statusCode: 200,
+      body: JSON.stringify('Lambda is warm!'),
+    };
+  }
+
   const result = await handler(event, context);
   return result;
 };

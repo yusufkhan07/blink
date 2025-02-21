@@ -1,5 +1,6 @@
 service: blink-slack-app
 frameworkVersion: "4"
+
 provider:
   name: aws
   region: us-east-1
@@ -27,6 +28,7 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: !GetAtt SlackOAuthTokensTable.Arn
+
 functions:
   slack-install-handler:
     handler: src/lambdas/slack-install-handler.handler
@@ -43,6 +45,13 @@ functions:
       - http:
           path: slack/events
           method: post
+      # TODO: This is a quick fix to keep the function warm. Currently cold start 
+      # takes more than 3 secs and Slack expects a response within 3 secs. We can
+      # fix the cold start by compressing the build artifact. 
+      - schedule:
+          rate: rate(2 minutes)
+          input:
+            source: "aws.events" 
     environment:
       MessageExpirationHandlerStateMachineArn: ${self:resources.Outputs.MessageExpirationHandlerStateMachine.Value}
   message-expiration-handler:
