@@ -49,7 +49,7 @@ functions:
       # takes more than 3 secs and Slack expects a response within 3 secs. We can
       # fix the cold start by compressing the build artifact. 
       - schedule:
-          rate: rate(2 minutes)
+          rate: rate(5 minutes)
           input:
             source: "aws.events" 
     environment:
