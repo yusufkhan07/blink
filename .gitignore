@@ -45,3 +45,5 @@ Thumbs.db
 .env.*
 
 .serverless
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
