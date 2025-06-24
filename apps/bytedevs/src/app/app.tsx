@@ -1,52 +1,28 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.scss';
-import NxWelcome from './nx-welcome';
-
-import { Route, Routes, Link } from 'react-router-dom';
-
 export function App() {
   return (
-    <div>
-      <NxWelcome title="bytedevs" />
-
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <div role="navigation">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
-        </ul>
-      </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
-          }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
-      </Routes>
-      {/* END: routes */}
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: '#f8fafc',
+        fontFamily: 'system-ui, sans-serif',
+      }}
+    >
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#222' }}>
+        ByteDevs.com is Coming Soon
+      </h1>
+      <p style={{ fontSize: '1.25rem', color: '#555', marginBottom: '2rem' }}>
+        We're working hard to launch our site. Stay tuned!
+      </p>
+      <p style={{ fontSize: '1rem', color: '#888' }}>
+        Contact: <a href="mailto:yusufkhanjee@gmail.com">yusufkhanjee@gmail.com</a>
+      </p>
     </div>
   );
 }
 
 export default App;
+
