@@ -1,0 +1,39 @@
+{
+  "display_information": {
+    "name": "Blink",
+    "description": "Send one-time or expiring messages in Slack. Keep conversations private and secure—because some messages shouldn’t last.",
+    "background_color": "#1e90ff"
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "Blink",
+      "always_online": false
+    },
+    "slash_commands": [
+      {
+        "command": "/blink",
+        "url": "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/events",
+        "description": "Send a one-time or expiring message in Slack.",
+        "usage_hint": "your secret message",
+        "should_escape": false
+      }
+    ]
+  },
+  "oauth_config": {
+    "redirect_urls": [
+      "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/oauth_redirect"
+    ],
+    "scopes": {
+      "bot": ["chat:write", "chat:write.public", "commands"]
+    }
+  },
+  "settings": {
+    "interactivity": {
+      "is_enabled": true,
+      "request_url": "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/events"
+    },
+    "org_deploy_enabled": true,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}
