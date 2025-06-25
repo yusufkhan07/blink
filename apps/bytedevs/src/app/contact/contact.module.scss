@@ -1,0 +1,19 @@
+@import '../styles/colors.module.scss';
+
+.contact {
+  font-size: 0.98rem;
+  color: $secondary;
+  margin-top: 1.5rem;
+
+  a {
+    color: $primary;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $text;
+      text-decoration: underline;
+    }
+  }
+}
