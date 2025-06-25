@@ -1,7 +1,7 @@
 {
   "display_information": {
     "name": "Blink (Development)",
-    "description": "Send one-time or expiring messages in Slack. Keep conversations private and secure—because some messages shouldn’t last.",
+    "description": "Send self-destructing Slack messages — because some chats shouldn’t last.",
     "background_color": "#1e90ff"
   },
   "features": {
