@@ -25,7 +25,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npx nx run bytedevs:build
+      - run: npx nx run bytedevs:build && npx nx run blink-website:build
 
       # TODO: We should use NX to determine which projects to deploy
       #       and deploy only those projects that have changed.
