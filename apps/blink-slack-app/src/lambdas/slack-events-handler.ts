@@ -12,7 +12,7 @@ import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest
 // It's displayed ONCE for EACH User in Chat
 
 const app = new App({
-  receiver: expressReceiver
+  receiver: expressReceiver,
 });
 
 export const configureCommands = (app: App<StringIndexed>) => {
@@ -28,7 +28,7 @@ module.exports.handler = async (event, context) => {
   // Check if this is a warm-up request
   if (event.source === 'aws.events') {
     console.log('Warm-up request received. Keeping the Lambda warm.');
-    
+
     return {
       statusCode: 200,
       body: JSON.stringify('Lambda is warm!'),

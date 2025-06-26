@@ -40,7 +40,7 @@ jobs:
 
       - name: Deploy Slack App (Production)
         if: github.ref == 'refs/heads/main'
-        run: npx nx run slack-app:deploy:production
+        run: npx nx run blink-slack-app:deploy:production
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

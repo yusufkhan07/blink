@@ -15,7 +15,10 @@ const scheduleMessageExpiry = async (
   messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput,
   logger: Logger
 ) => {
-  logger.info("Scheduling message for expiry: ", messageExpirationHandlerStateMachineInput);
+  logger.info(
+    'Scheduling message for expiry: ',
+    messageExpirationHandlerStateMachineInput
+  );
 
   const messageExpirationHandlerStateMachineArn =
     process.env.MessageExpirationHandlerStateMachineArn;
@@ -83,7 +86,7 @@ export const blinkCommandHandler = async ({
   logger,
   client,
 }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
-  logger.info("blink command handler started execution");
+  logger.info('blink command handler started execution');
 
   await ack();
 
@@ -91,7 +94,7 @@ export const blinkCommandHandler = async ({
   const expirationTimeInSecs = constants.defaultMessageExpiryInSecs;
 
   try {
-    logger.info("Creating new message");
+    logger.info('Creating new message');
 
     const postedMessage = await postNewMessage(
       client,
@@ -99,20 +102,23 @@ export const blinkCommandHandler = async ({
       expirationTimeInSecs
     );
 
-    logger.info("Created new message");
+    logger.info('Created new message');
 
-    await scheduleMessageExpiry({
-      expireAt: new Date(
-        (Math.floor(Date.now() / 1000) + expirationTimeInSecs) * 1000
-      ).toISOString(),
-      team_id: command.team_id,
-      ts: postedMessage.ts,
-      channel_id: command.channel_id,
-      user_id: command.user_id,
-    }, logger);
+    await scheduleMessageExpiry(
+      {
+        expireAt: new Date(
+          (Math.floor(Date.now() / 1000) + expirationTimeInSecs) * 1000
+        ).toISOString(),
+        team_id: command.team_id,
+        ts: postedMessage.ts,
+        channel_id: command.channel_id,
+        user_id: command.user_id,
+      },
+      logger
+    );
   } catch (err) {
     logger.error(err);
-    
+
     // TODO: send this error before trying to post the message.
     // Figure out a way to check permissions of the given channel
     if (err.data?.error === 'channel_not_found') {

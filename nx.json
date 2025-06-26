@@ -34,7 +34,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/slack-app-e2e/**/*"]
+      "exclude": ["apps/blink-slack-app-e2e/**/*"]
     },
     {
       "plugin": "@nx/vite/plugin",
