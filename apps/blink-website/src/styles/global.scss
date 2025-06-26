@@ -1,0 +1,25 @@
+@import './colors.scss';
+
+body {
+  background: $background;
+  color: $text;
+}
+
+.bg-primary {
+  background-color: $primary !important;
+}
+.bg-secondary {
+  background-color: $secondary !important;
+}
+.bg-background {
+  background-color: $background !important;
+}
+.text-primary {
+  color: $primary !important;
+}
+.text-secondary {
+  color: $secondary !important;
+}
+.text-text {
+  color: $text !important;
+}

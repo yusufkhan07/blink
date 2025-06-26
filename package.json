@@ -8,12 +8,16 @@
   "private": true,
   "dependencies": {
     "@slack/bolt": "^4.2.0",
+    "@tailwindcss/vite": "^4.1.10",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.6.0",
+    "clsx": "^2.1.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "6.11.2",
-    "serverless-http": "^3.2.0"
+    "serverless-http": "^3.2.0",
+    "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.734.0",

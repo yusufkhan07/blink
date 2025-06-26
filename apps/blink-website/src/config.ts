@@ -1,0 +1,1 @@
+export const SLACK_OAUTH_URL = "https://slack.com/oauth/v2/authorize?scope=chat%3Awrite%2Cchat%3Awrite.public%2Ccommands&client_id=819140066320.9092531390403";
