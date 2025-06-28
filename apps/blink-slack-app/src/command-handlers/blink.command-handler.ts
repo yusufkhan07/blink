@@ -68,9 +68,7 @@ const postNewMessage = async (
             type: 'mrkdwn',
             text: `:hourglass: Expires <!date^${expirationTimestampInSecs}^{date} at {time}|${new Date(
               expirationTimestampInSecs * 1000
-            ).toLocaleString()}> | :alarm_clock: *Time remaining*: ${formatTimeRemaining(
-              expirationTimeInSecs
-            )}`,
+            ).toLocaleString()}>`,
           },
         ],
       },
