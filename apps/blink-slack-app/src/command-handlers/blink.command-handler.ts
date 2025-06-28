@@ -48,7 +48,7 @@ const postNewMessage = async (
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `:lock: _<@${command.user_id}> sent this disappearing message using blink_`,
+          text: `:dash: _<@${command.user_id}> sent this disappearing message using blink_`,
         },
       },
       {
