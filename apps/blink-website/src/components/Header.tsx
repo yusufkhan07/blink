@@ -6,6 +6,7 @@ export function Header() {
     <header className="bg-white border-b border-gray-200">
       <nav className="container mx-auto flex items-center justify-between py-4 px-4">
         <Link to="/" className="flex items-center gap-2 font-bold text-primary text-xl">
+          <img src="/icon.png" alt="Blink Logo" className="h-8 w-auto" />
           <span>Blink</span>
         </Link>
         <ul className="flex gap-6 text-sm font-medium">
