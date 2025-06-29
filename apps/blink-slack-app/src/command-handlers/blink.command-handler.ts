@@ -73,7 +73,7 @@ const postNewMessage = async (
         ],
       },
     ],
-    text: `:lock: <@${command.user_id}> sent this disappearing message using blink`,
+    text: `:dash: <@${command.user_id}> sent this disappearing message using blink`,
   });
 };
 

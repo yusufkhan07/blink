@@ -21,7 +21,7 @@ const hideMessage = async (
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `:lock: _<@${event.user_id}> sent this disappearing message using blink_`,
+          text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
         },
       },
       {
@@ -36,7 +36,7 @@ const hideMessage = async (
         },
       },
     ],
-    text: `:lock: _<@${event.user_id}> sent this disappearing message using blink_`,
+    text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
   });
 };
 
