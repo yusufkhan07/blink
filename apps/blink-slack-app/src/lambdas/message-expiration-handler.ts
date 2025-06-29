@@ -13,31 +13,40 @@ const hideMessage = async (
       .bot?.token,
   });
 
-  await app.client.chat.update({
-    ts: event.ts,
-    channel: event.channel_id,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
+  try {
+    await app.client.chat.update({
+      ts: event.ts,
+      channel: event.channel_id,
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
+          },
         },
-      },
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `_This message expired on <!date^${Math.floor(
-            Date.now() / 1000
-          )}^{date} at {time}|${new Date(
-            Math.floor(Date.now() / 1000) * 1000
-          ).toLocaleString()}>_`,
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `_This message expired on <!date^${Math.floor(
+              Date.now() / 1000
+            )}^{date} at {time}|${new Date(
+              Math.floor(Date.now() / 1000) * 1000
+            ).toLocaleString()}>_`,
+          },
         },
-      },
-    ],
-    text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
-  });
+      ],
+      text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
+    });
+  } catch (error) {
+    if (error.data?.error === 'message_not_found') {
+      // Ignore if the message is already deleted or if the channel is not found
+      return;
+    }
+
+    throw error;
+  }
 };
 
 module.exports.handler = async (
