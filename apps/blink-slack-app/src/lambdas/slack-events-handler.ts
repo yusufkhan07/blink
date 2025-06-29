@@ -3,6 +3,8 @@ import serverless from 'serverless-http';
 import { blinkCommandHandler } from '../command-handlers/blink.command-handler';
 import { expressReceiver } from '../express-receiver';
 import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest.command-handler';
+import { slack_actions } from '../slack-actions';
+import { messageMenuActionHandler } from '../action-handlers/message-menu.action-handler';
 
 // TODO: setup prettier
 // TODO: setup vs code auto formatting on save
@@ -19,6 +21,8 @@ export const configureCommands = (app: App<StringIndexed>) => {
   app.command('/blink', blinkCommandHandler);
 
   app.command('/blinkmodaltest', blinkmodaltestCommandHandler);
+
+  app.action(slack_actions.message_menu, messageMenuActionHandler);
 };
 
 configureCommands(app);

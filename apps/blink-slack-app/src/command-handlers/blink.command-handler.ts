@@ -1,7 +1,6 @@
 import AWS from 'aws-sdk';
 import { Logger, WebClient } from '@slack/web-api';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
-import { formatTimeRemaining } from '../utils/formatTimeRemaining';
 import {
   AllMiddlewareArgs,
   SlackCommandMiddlewareArgs,
@@ -9,6 +8,8 @@ import {
   StringIndexed,
 } from '@slack/bolt';
 import { constants } from '../constants';
+import { slack_actions } from '../slack-actions';
+
 const stepfunctions = new AWS.StepFunctions();
 
 const scheduleMessageExpiry = async (
@@ -49,6 +50,20 @@ const postNewMessage = async (
         text: {
           type: 'mrkdwn',
           text: `:dash: _<@${command.user_id}> sent this disappearing message using blink_`,
+        },
+        accessory: {
+          type: 'overflow',
+          action_id: slack_actions.message_menu,
+          options: [
+            {
+              text: {
+                type: 'plain_text',
+                emoji: true,
+                text: ':wastebasket:  Delete message',
+              },
+              value: 'value-0',
+            },
+          ],
         },
       },
       {
