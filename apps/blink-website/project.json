@@ -5,15 +5,5 @@
   "projectType": "application",
   "tags": [],
   "// targets": "to see all targets run: nx show project blink-website --web",
-  "targets": {
-    "deploy": {
-      "executor": "nx:run-commands",
-      "defaultConfiguration": "production",
-      "configurations": {
-        "production": {
-          "command": "firebase deploy"
-        }
-      }
-    }
-  }
+  "targets": {}
 }

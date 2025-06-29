@@ -33,14 +33,9 @@ jobs:
       - run: npm ci
       - uses: nrwl/nx-set-shas@v4
 
-      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-      # - run: npx nx-cloud record -- echo Hello World
-      # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
-      - run: npx nx affected -t lint test build
-
-      - name: Deploy Slack App (Production)
-        if: github.ref == 'refs/heads/main'
-        run: npx nx run blink-slack-app:deploy:production
+      # TODO: Look into using `nx affected` to only run tests for changed projects
+      # It seems like nx affected only works with PRs, because we need to compare against the base branch
+      - run: npx nx run-many -t lint test build deploy -c production
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
