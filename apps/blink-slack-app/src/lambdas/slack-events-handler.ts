@@ -6,6 +6,7 @@ import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest
 import { slack_actions } from '../slack-actions';
 import { messageMenuActionHandler } from '../action-handlers/message-menu.action-handler';
 import { slack_events } from '../slack-events';
+import { appHomeOpenedEventHandler } from '../event-handlers/app-home-opened.event-handler';
 
 // TODO: setup prettier
 // TODO: setup vs code auto formatting on save
@@ -26,24 +27,8 @@ export const configureCommands = (app: App<StringIndexed>) => {
   app.action(slack_actions.message_menu, messageMenuActionHandler);
 
   app.event(
-    slack_events.bot_events.app_home_opened as 'app_home_opened',
-    async ({ event, client }) => {
-      await client.views.publish({
-        user_id: event.user,
-        view: {
-          type: 'home',
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: 'Welcome to Blink!',
-              },
-            },
-          ],
-        },
-      });
-    }
+    slack_events.bot_events.app_home_opened,
+    appHomeOpenedEventHandler
   );
 };
 
