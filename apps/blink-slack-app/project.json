@@ -39,15 +39,15 @@
       }
     },
     "serve": {
+      "dependsOn": ["build"],
       "executor": "nx:run-commands",
-      "defaultConfiguration": "development",
       "options": {
-        "cwd": "apps/blink-slack-app"
-      },
-      "configurations": {
-        "development": {
-          "command": "serverless offline start --stage development --noPrependStageInUrl --reloadHandler --noTimeout"
-        }
+        "cwd": "apps/blink-slack-app",
+        "commands": [
+          "ngrok http --domain=overly-poetic-raven.ngrok-free.app 3000",
+          "serverless offline start --stage development --noPrependStageInUrl --reloadHandler --noTimeout"
+        ],
+        "parallel": true
       }
     },
     "deploy": {
