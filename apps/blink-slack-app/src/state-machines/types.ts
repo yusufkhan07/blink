@@ -1,5 +1,5 @@
 export interface MessageExpirationHandlerStateMachineInput {
-  expireAt: string;
+  expire_at: string;
   team_id: string;
   ts: string;
   channel_id: string;

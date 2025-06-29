@@ -7,7 +7,7 @@ definition:
   States:
     WaitForDueDateTime:
       Type: Wait
-      TimestampPath: "$.expireAt"
+      TimestampPath: "$.expire_at"
       Next: HideMessage
     HideMessage:
       Type: Task

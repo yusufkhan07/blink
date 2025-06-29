@@ -119,7 +119,7 @@ export const blinkCommandHandler = async ({
 
     await scheduleMessageExpiry(
       {
-        expireAt: new Date(
+        expire_at: new Date(
           (Math.floor(Date.now() / 1000) + expirationTimeInSecs) * 1000
         ).toISOString(),
         team_id: command.team_id,
