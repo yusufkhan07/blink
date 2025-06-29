@@ -1,10 +1,12 @@
 import { AllMiddlewareArgs,SlackActionMiddlewareArgs, StringIndexed } from "@slack/bolt";
+import { UserMessageExpirationSettingsRepository } from "../repositories/user-message-expiration-settings.repository";
+
+const userMessageExpirationSettingsRepository = new UserMessageExpirationSettingsRepository();
 
 export const userMessageExpirationSelectedActionHandler = async ({
   ack,
   action,
-  body,
-  client,
+  body
 }: SlackActionMiddlewareArgs & AllMiddlewareArgs<StringIndexed>): Promise<void> => { 
     await ack();
 
@@ -12,7 +14,8 @@ export const userMessageExpirationSelectedActionHandler = async ({
         return;
     }
 
-    // TODO: Save the settings for user in database.
-    
-    console.log('User selected message expiration:', body.user, action.selected_option.value);
+    await userMessageExpirationSettingsRepository.saveExpirationTime(
+        body.user.id,
+        action.selected_option.value
+    );
 };
