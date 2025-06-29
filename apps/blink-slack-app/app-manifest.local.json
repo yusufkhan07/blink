@@ -1,12 +1,12 @@
 {
   "display_information": {
-    "name": "Blink (Development)",
+    "name": "Blink (Local)",
     "description": "Send self-destructing Slack messages — because some chats shouldn’t last.",
     "background_color": "#1e90ff"
   },
   "features": {
     "bot_user": {
-      "display_name": "Blink (Development)",
+      "display_name": "Blink (Local)",
       "always_online": false
     },
     "slash_commands": [
