@@ -5,6 +5,11 @@
     "background_color": "#1e90ff"
   },
   "features": {
+    "app_home": {
+      "home_tab_enabled": true,
+      "messages_tab_enabled": false,
+      "messages_tab_read_only_enabled": true
+    },
     "bot_user": {
       "display_name": "Blink",
       "always_online": false
@@ -28,6 +33,10 @@
     }
   },
   "settings": {
+    "event_subscriptions": {
+      "request_url": "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/events",
+      "bot_events": ["app_home_opened"]
+    },
     "interactivity": {
       "is_enabled": true,
       "request_url": "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/events"
