@@ -1,0 +1,45 @@
+{
+  "display_information": {
+    "name": "Blink (Development)",
+    "description": "Send self-destructing Slack messages — because some chats shouldn’t last.",
+    "background_color": "#1e90ff"
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "Blink (Development)",
+      "always_online": false
+    },
+    "slash_commands": [
+      {
+        "command": "/blink",
+        "url": "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/events",
+        "description": "Send a one-time or expiring message in Slack.",
+        "usage_hint": "your secret message",
+        "should_escape": false
+      },
+      {
+        "command": "/blinkmodaltest",
+        "url": "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/events",
+        "description": "test modal",
+        "should_escape": false
+      }
+    ]
+  },
+  "oauth_config": {
+    "redirect_urls": [
+      "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/oauth_redirect"
+    ],
+    "scopes": {
+      "bot": ["chat:write", "chat:write.public", "commands"]
+    }
+  },
+  "settings": {
+    "interactivity": {
+      "is_enabled": true,
+      "request_url": "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/events"
+    },
+    "org_deploy_enabled": true,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}
