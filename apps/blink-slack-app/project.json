@@ -26,7 +26,6 @@
         }
       },
       "configurations": {
-        "development": {},
         "production": {
           "generateLockfile": true,
           "esbuildOptions": {
@@ -41,13 +40,18 @@
     "serve": {
       "dependsOn": ["build"],
       "executor": "nx:run-commands",
+      "defaultConfiguration": "local",
       "options": {
-        "cwd": "apps/blink-slack-app",
-        "commands": [
-          "ngrok http --domain=overly-poetic-raven.ngrok-free.app 3000",
-          "serverless offline start --stage development --noPrependStageInUrl --reloadHandler --noTimeout"
-        ],
-        "parallel": true
+        "cwd": "apps/blink-slack-app"
+      },
+      "configurations": {
+        "local": {
+          "commands": [
+            "ngrok http --domain=overly-poetic-raven.ngrok-free.app 3000",
+            "serverless offline start --stage local --noPrependStageInUrl --reloadHandler --noTimeout"
+          ],
+          "parallel": true
+        }
       }
     },
     "deploy": {
@@ -57,6 +61,9 @@
         "cwd": "apps/blink-slack-app"
       },
       "configurations": {
+        "local": {
+          "command": "serverless deploy --stage local"
+        },
         "development": {
           "command": "serverless deploy --stage development"
         },
