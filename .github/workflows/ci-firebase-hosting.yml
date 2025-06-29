@@ -1,4 +1,4 @@
-name: Deploy Bytedevs.com to Firebase Hosting
+name: Deploy Websites to Firebase Hosting
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  build_and_deploy_live_website:
+  build_and_deploy_live_websites:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
