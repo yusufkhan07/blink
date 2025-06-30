@@ -9,8 +9,12 @@ import {
 } from '@slack/bolt';
 import { constants } from '../constants';
 import { slack_actions } from '../slack-actions';
+import { UserMessageExpirationSettingsRepository } from '../repositories/user-message-expiration-settings.repository';
+import { parseExpirationToSeconds } from '../utils/parseExpirationToSeconds';
 
 const stepfunctions = new AWS.StepFunctions();
+const userMessageExpirationSettingsRepository =
+  new UserMessageExpirationSettingsRepository();
 
 const scheduleMessageExpiry = async (
   messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput,
@@ -103,8 +107,12 @@ export const blinkCommandHandler = async ({
 
   await ack();
 
-  // TODO: This should be fetched from settings instead of hard coding it.
-  const expirationTimeInSecs = constants.defaultMessageExpiryInSecs;
+  const userExpirationTimeSettingValue = await userMessageExpirationSettingsRepository.getExpirationTime(
+    command.user_id
+  );
+  const expirationTimeInSecs = userExpirationTimeSettingValue
+    ? parseExpirationToSeconds(userExpirationTimeSettingValue)
+    : constants.defaultMessageExpiryInSecs;
 
   try {
     logger.info('Creating new message');
