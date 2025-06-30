@@ -1,6 +1,6 @@
 {
   "display_information": {
-    "name": "Blink",
+    "name": "Blink (Development)",
     "description": "Send self-destructing Slack messages — because some chats shouldn’t last.",
     "background_color": "#1e90ff"
   },
@@ -11,22 +11,28 @@
       "messages_tab_read_only_enabled": true
     },
     "bot_user": {
-      "display_name": "Blink",
+      "display_name": "Blink (Development)",
       "always_online": false
     },
     "slash_commands": [
       {
         "command": "/blink",
-        "url": "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/events",
+        "url": "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/events",
         "description": "Send a one-time or expiring message in Slack.",
         "usage_hint": "your secret message",
+        "should_escape": false
+      },
+      {
+        "command": "/blinkmodaltest",
+        "url": "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/events",
+        "description": "test modal",
         "should_escape": false
       }
     ]
   },
   "oauth_config": {
     "redirect_urls": [
-      "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/oauth_redirect"
+      "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/oauth_redirect"
     ],
     "scopes": {
       "bot": ["chat:write", "chat:write.public", "commands"]
@@ -34,12 +40,12 @@
   },
   "settings": {
     "event_subscriptions": {
-      "request_url": "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/events",
+      "request_url": "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/events",
       "bot_events": ["app_home_opened"]
     },
     "interactivity": {
       "is_enabled": true,
-      "request_url": "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/events"
+      "request_url": "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/events"
     },
     "org_deploy_enabled": true,
     "socket_mode_enabled": false,

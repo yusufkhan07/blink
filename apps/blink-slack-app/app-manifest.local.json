@@ -1,12 +1,17 @@
 {
   "display_information": {
-    "name": "Blink (Development)",
+    "name": "Blink (Local)",
     "description": "Send self-destructing Slack messages — because some chats shouldn’t last.",
     "background_color": "#1e90ff"
   },
   "features": {
+    "app_home": {
+      "home_tab_enabled": true,
+      "messages_tab_enabled": false,
+      "messages_tab_read_only_enabled": true
+    },
     "bot_user": {
-      "display_name": "Blink (Development)",
+      "display_name": "Blink (Local)",
       "always_online": false
     },
     "slash_commands": [
@@ -34,6 +39,10 @@
     }
   },
   "settings": {
+    "event_subscriptions": {
+      "request_url": "https://overly-poetic-raven.ngrok-free.app/slack/events",
+      "bot_events": ["app_home_opened"]
+    },
     "interactivity": {
       "is_enabled": true,
       "request_url": "https://overly-poetic-raven.ngrok-free.app/slack/events"

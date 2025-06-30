@@ -2,9 +2,7 @@
   "name": "@blink/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {
-    "ngrok": "ngrok http --domain=overly-poetic-raven.ngrok-free.app 3000"
-  },
+  "scripts": {},
   "private": true,
   "dependencies": {
     "@slack/bolt": "^4.2.0",

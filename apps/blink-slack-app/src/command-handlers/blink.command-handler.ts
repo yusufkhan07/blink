@@ -1,7 +1,6 @@
 import AWS from 'aws-sdk';
 import { Logger, WebClient } from '@slack/web-api';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
-import { formatTimeRemaining } from '../utils/formatTimeRemaining';
 import {
   AllMiddlewareArgs,
   SlackCommandMiddlewareArgs,
@@ -9,7 +8,13 @@ import {
   StringIndexed,
 } from '@slack/bolt';
 import { constants } from '../constants';
+import { slack_actions } from '../slack-actions';
+import { UserMessageExpirationSettingsRepository } from '../repositories/user-message-expiration-settings.repository';
+import { parseExpirationToSeconds } from '../utils/parseExpirationToSeconds';
+
 const stepfunctions = new AWS.StepFunctions();
+const userMessageExpirationSettingsRepository =
+  new UserMessageExpirationSettingsRepository();
 
 const scheduleMessageExpiry = async (
   messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput,
@@ -50,6 +55,20 @@ const postNewMessage = async (
           type: 'mrkdwn',
           text: `:dash: _<@${command.user_id}> sent this disappearing message using blink_`,
         },
+        accessory: {
+          type: 'overflow',
+          action_id: slack_actions.message_menu,
+          options: [
+            {
+              text: {
+                type: 'plain_text',
+                emoji: true,
+                text: ':wastebasket:  Delete message',
+              },
+              value: 'value-0',
+            },
+          ],
+        },
       },
       {
         type: 'section',
@@ -73,7 +92,7 @@ const postNewMessage = async (
         ],
       },
     ],
-    text: `:lock: <@${command.user_id}> sent this disappearing message using blink`,
+    text: `:dash: <@${command.user_id}> sent this disappearing message using blink`,
   });
 };
 
@@ -88,8 +107,12 @@ export const blinkCommandHandler = async ({
 
   await ack();
 
-  // TODO: This should be fetched from settings instead of hard coding it.
-  const expirationTimeInSecs = constants.defaultMessageExpiryInSecs;
+  const userExpirationTimeSettingValue = await userMessageExpirationSettingsRepository.getExpirationTime(
+    command.user_id
+  );
+  const expirationTimeInSecs = userExpirationTimeSettingValue
+    ? parseExpirationToSeconds(userExpirationTimeSettingValue)
+    : constants.defaultMessageExpiryInSecs;
 
   try {
     logger.info('Creating new message');
@@ -104,7 +127,7 @@ export const blinkCommandHandler = async ({
 
     await scheduleMessageExpiry(
       {
-        expireAt: new Date(
+        expire_at: new Date(
           (Math.floor(Date.now() / 1000) + expirationTimeInSecs) * 1000
         ).toISOString(),
         team_id: command.team_id,
