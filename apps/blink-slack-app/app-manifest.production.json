@@ -2,7 +2,8 @@
   "display_information": {
     "name": "Blink",
     "description": "Send self-destructing Slack messages — because some chats shouldn’t last.",
-    "background_color": "#1e90ff"
+    "background_color": "#1e90ff",
+    "long_description": "Send self-destructing messages in Slack! Blink automatically deletes messages after 24 hours, keeping conversations clutter-free and secure. Perfect for sensitive info, temporary updates, or reducing channel noise.\r\n\r\n🔹 Self-destruct timer – Messages vanish after 24 hours (custom durations coming soon!).\r\n🔹 On-the-way features – Disappear after X views or custom timeframes.\r\n🔹 Simple commands – Use /blink to send ephemeral messages instantly.\r\n🔹 No traces – Messages are permanently deleted—no logs, no leftovers.\r\n\r\n\"Share it. See it. Then poof—it’s gone.\""
   },
   "features": {
     "app_home": {
