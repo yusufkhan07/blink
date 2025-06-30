@@ -24,7 +24,7 @@ export const appHomeOpenedEventHandler = async ({
 }: SlackEventMiddlewareArgs<'app_home_opened'> &
   AllMiddlewareArgs<StringIndexed>) => {
   const existingSetting =
-    await userMessageExpirationSettingsRepository.getExpirationTime(event.user);
+    await userMessageExpirationSettingsRepository.getExpirationTime(event.user) ?? '24h';
 
   await client.views.publish({
     user_id: event.user,
