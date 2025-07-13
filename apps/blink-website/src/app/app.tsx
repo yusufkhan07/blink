@@ -1,13 +1,13 @@
+import { useEffect } from 'react';
+import { initializeApp } from "firebase/app";
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { Routes, Route } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Home } from '../pages/Home';
 import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { ContactUs } from '../pages/ContactUs';
-import { initializeApp } from "firebase/app";
-import { getAnalytics, logEvent } from "firebase/analytics";
 import '../styles/global.scss';
-import { useEffect } from 'react';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTvJErwf7LlxhDU-SyZuc4XdnVG8uTXyw",
