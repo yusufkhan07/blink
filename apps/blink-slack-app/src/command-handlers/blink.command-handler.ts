@@ -45,6 +45,8 @@ const postNewMessage = async (
   const expirationTimestampInSecs =
     Math.floor(Date.now() / 1000) + expirationTimeInSecs;
 
+  // We can use respond() function to reply in DMs but there's no way to update the message later.
+  // So we use postMessage() to send the message and then update it later.
   return await client.chat.postMessage({
     attachments: [],
     channel: command.channel_id,
@@ -143,10 +145,18 @@ export const blinkCommandHandler = async ({
     // TODO: send this error before trying to post the message.
     // Figure out a way to check permissions of the given channel
     if (err.data?.error === 'channel_not_found') {
-      await respond({
-        response_type: 'ephemeral',
-        text: 'Please invite Blink to this private/shared channel before using it.',
-      });
+      if(command.channel_name === "directmessage") {
+        await respond({
+          response_type: 'ephemeral',
+          text: 'Blink is not available in direct messages. Please use it in a public/private channel.',
+        });
+      }
+       else {
+         await respond({
+           response_type: 'ephemeral',
+           text: 'Please invite Blink to this private/shared channel before using it.',
+         });
+       }
     }
 
     console.log(err);
