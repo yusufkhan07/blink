@@ -45,6 +45,8 @@ const postNewMessage = async (
   const expirationTimestampInSecs =
     Math.floor(Date.now() / 1000) + expirationTimeInSecs;
 
+  // We can use respond() function to reply in DMs but there's no way to update the message later.
+  // So we use postMessage() to send the message and then update it later.
   return await client.chat.postMessage({
     attachments: [],
     channel: command.channel_id,
