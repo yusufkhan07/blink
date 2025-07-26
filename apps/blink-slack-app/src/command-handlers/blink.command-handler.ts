@@ -147,15 +147,39 @@ export const blinkCommandHandler = async ({
     );
   } catch (err) {
     logger.error(err);
-    console.log(err);
 
     // TODO: send this error before trying to post the message.
     // Figure out a way to check permissions of the given channel
     if (err.data?.error === 'channel_not_found') {
       if (command.channel_name === 'directmessage') {
         await respond({
-          response_type: 'ephemeral',
+          response_type: 'in_channel',
           text: 'Blink is not available in direct messages. Please use it in a public/private channel.',
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `This message was sent using @Blink`,
+              },
+            },
+            {
+              type: 'actions',
+              elements: [
+                {
+                  type: 'button',
+                  text: {
+                    type: 'plain_text',
+                    text: 'View Message',
+                    emoji: true,
+                  },
+                  action_id: 'view_dm_message',
+                  value: 'view_message',
+                  style: 'primary',
+                },
+              ],
+            },
+          ],
         });
       } else {
         // Notes: Slack bot can't join a private channel automatically. It has to be invited by a user.
@@ -165,6 +189,5 @@ export const blinkCommandHandler = async ({
         });
       }
     }
-
   }
 };
