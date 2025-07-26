@@ -1,0 +1,7 @@
+Copyright (c) 2025 Bytedevs Inc.
+
+All rights reserved.
+
+This code is provided for viewing purposes only. No part of this codebase may be copied, reproduced, distributed, or used in any form without express written permission from Bytedevs Inc.
+
+Unauthorized replication, modification, or use of this code is strictly prohibited.
