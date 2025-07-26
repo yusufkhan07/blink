@@ -8,6 +8,7 @@ import { messageMenuActionHandler } from '../action-handlers/message-menu.action
 import { slack_events } from '../slack-events';
 import { appHomeOpenedEventHandler } from '../event-handlers/app-home-opened.event-handler';
 import { userMessageExpirationSelectedActionHandler } from '../action-handlers/user-message-expiration-selected.action-handler';
+import { viewDmMessageActionHandler } from '../action-handlers/view-dm-message.action-handler';
 
 // TODO: setup prettier
 // TODO: setup vs code auto formatting on save
@@ -27,15 +28,14 @@ export const configureCommands = (app: App<StringIndexed>) => {
 
   app.action(slack_actions.message_menu, messageMenuActionHandler);
 
+  app.action(slack_actions.view_dm_message, viewDmMessageActionHandler);
+
   app.action(
     slack_actions.user_message_expiration_selected,
-    userMessageExpirationSelectedActionHandler 
+    userMessageExpirationSelectedActionHandler
   );
 
-  app.event(
-    slack_events.bot_events.app_home_opened,
-    appHomeOpenedEventHandler
-  );
+  app.event(slack_events.bot_events.app_home_opened, appHomeOpenedEventHandler);
 };
 
 configureCommands(app);

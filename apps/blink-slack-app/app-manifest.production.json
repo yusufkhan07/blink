@@ -30,7 +30,13 @@
       "https://i4wc1sbg3j.execute-api.us-east-1.amazonaws.com/production/slack/oauth_redirect"
     ],
     "scopes": {
-      "bot": ["chat:write", "chat:write.public", "commands"]
+      "bot": [
+        "chat:write",
+        "chat:write.public",
+        "commands",
+        "chat:write.customize",
+        "users:read"
+      ]
     }
   },
   "settings": {
