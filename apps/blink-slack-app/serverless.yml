@@ -1,5 +1,5 @@
 service: blink-slack-app
-frameworkVersion: "4"
+frameworkVersion: '4'
 
 provider:
   name: aws
@@ -12,16 +12,17 @@ provider:
     SLACK_CLIENT_SECRET: ${env:SLACK_CLIENT_SECRET}
     SLACK_OAUTHTOKENS_TABLENAME: ${self:resources.Outputs.SlackOAuthTokensTableName.Value}
     USER_MESSAGE_EXPIRATION_SETTINGS_TABLENAME: ${self:resources.Outputs.UserMessageExpirationSettingsTableName.Value}
+    USER_MESSAGES_TABLENAME: ${self:resources.Outputs.UserMessagesTableName.Value}
   iam:
     role:
       statements:
-        - Effect: "Allow"
+        - Effect: 'Allow'
           Action:
-            - "states:StartExecution"
+            - 'states:StartExecution'
           # TODO: we should ref to MessageExpirationHandlerStateMachine but it's giving a circular dependency error.
           # Inspired by https://github.com/paulswail/serverless-email-scheduler/blob/master/serverless.yml
           # https://serverlessfirst.com/serverless-email-scheduler/
-          Resource: "*"
+          Resource: '*'
         - Effect: Allow
           Action:
             - dynamodb:PutItem
@@ -31,6 +32,7 @@ provider:
           Resource:
             - !GetAtt SlackOAuthTokensTable.Arn
             - !GetAtt UserMessageExpirationSettingsTable.Arn
+            - !GetAtt UserMessagesTable.Arn
 
 functions:
   slack-install-handler:
@@ -49,13 +51,13 @@ functions:
       - http:
           path: slack/events
           method: post
-      # TODO: This is a quick fix to keep the function warm. Currently cold start 
+      # TODO: This is a quick fix to keep the function warm. Currently cold start
       # takes more than 3 secs and Slack expects a response within 3 secs. We can
-      # fix the cold start by compressing the build artifact. 
+      # fix the cold start by compressing the build artifact.
       - schedule:
           rate: rate(5 minutes)
           input:
-            source: "aws.events"
+            source: 'aws.events'
     environment:
       MessageExpirationHandlerStateMachineArn: ${self:resources.Outputs.MessageExpirationHandlerStateMachine.Value}
       # USER_MESSAGE_EXPIRATION_SETTINGS_TABLENAME: ${self:resources.Outputs.UserMessageExpirationSettingsTableName.Value}
@@ -65,8 +67,7 @@ functions:
 
 stepFunctions:
   stateMachines:
-    MessageExpirationHandlerStateMachine:
-      ${file(src/state-machines/message-expiration-handler.state-machine.yml)}
+    MessageExpirationHandlerStateMachine: ${file(src/state-machines/message-expiration-handler.state-machine.yml)}
 
 resources:
   Resources:
@@ -99,6 +100,23 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 
+    UserMessagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: UserMessagesTable-${opt:stage}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TimeToLiveSpecification:
+          AttributeName: expire_at
+          Enabled: true
+
   Outputs:
     MessageExpirationHandlerStateMachine:
       Description: The ARN of the StateMachine which hides expired slack messages
@@ -107,10 +125,12 @@ resources:
     SlackOAuthTokensTableName:
       Value:
         Ref: SlackOAuthTokensTable
-
     UserMessageExpirationSettingsTableName:
       Value:
         Ref: UserMessageExpirationSettingsTable
+    UserMessagesTableName:
+      Value:
+        Ref: UserMessagesTable
 
 plugins:
   - serverless-export-env
