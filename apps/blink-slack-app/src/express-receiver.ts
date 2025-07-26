@@ -27,7 +27,7 @@ export const expressReceiver = new ExpressReceiver({
   stateSecret: 'SLACK_STATE_SECRET',
   processBeforeResponse: true,
   // TODO: load from manifest file
-  scopes: ['chat:write', 'chat:write.public', 'commands'],
+  scopes: ['chat:write', 'chat:write.public', 'commands', 'chat:write.customize', 'users:read'],
   installerOptions: {
     installPath: '/slack/install',
     redirectUriPath: '/slack/oauth_redirect',

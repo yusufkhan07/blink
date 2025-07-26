@@ -35,7 +35,13 @@
       "https://wfqjawgud7.execute-api.us-east-1.amazonaws.com/development/slack/oauth_redirect"
     ],
     "scopes": {
-      "bot": ["chat:write", "chat:write.public", "commands"]
+      "bot": [
+        "chat:write",
+        "chat:write.public",
+        "commands",
+        "chat:write.customize",
+        "users:read"
+      ]
     }
   },
   "settings": {

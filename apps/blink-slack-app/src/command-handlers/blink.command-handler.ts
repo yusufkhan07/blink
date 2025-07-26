@@ -45,11 +45,16 @@ const postNewMessage = async (
   const expirationTimestampInSecs =
     Math.floor(Date.now() / 1000) + expirationTimeInSecs;
 
+  // TODO: Cache this user info to avoid multiple API calls
+  const slackUser = await client.users.info({ user: command.user_id });
+
   // We can use respond() function to reply in DMs but there's no way to update the message later.
   // So we use postMessage() to send the message and then update it later.
   return await client.chat.postMessage({
     attachments: [],
     channel: command.channel_id,
+    username: slackUser.user.profile.display_name ?? command.user_name,
+    icon_url: slackUser.user.profile.image_48,
     blocks: [
       {
         type: 'section',
@@ -109,9 +114,10 @@ export const blinkCommandHandler = async ({
 
   await ack();
 
-  const userExpirationTimeSettingValue = await userMessageExpirationSettingsRepository.getExpirationTime(
-    command.user_id
-  );
+  const userExpirationTimeSettingValue =
+    await userMessageExpirationSettingsRepository.getExpirationTime(
+      command.user_id
+    );
   const expirationTimeInSecs = userExpirationTimeSettingValue
     ? parseExpirationToSeconds(userExpirationTimeSettingValue)
     : constants.defaultMessageExpiryInSecs;
@@ -141,24 +147,24 @@ export const blinkCommandHandler = async ({
     );
   } catch (err) {
     logger.error(err);
+    console.log(err);
 
     // TODO: send this error before trying to post the message.
     // Figure out a way to check permissions of the given channel
     if (err.data?.error === 'channel_not_found') {
-      if(command.channel_name === "directmessage") {
+      if (command.channel_name === 'directmessage') {
         await respond({
           response_type: 'ephemeral',
           text: 'Blink is not available in direct messages. Please use it in a public/private channel.',
         });
+      } else {
+        // Notes: Slack bot can't join a private channel automatically. It has to be invited by a user.
+        await respond({
+          response_type: 'ephemeral',
+          text: 'Please invite Blink using `/invite @Blink` in this private/shared channel before using it.',
+        });
       }
-       else {
-         await respond({
-           response_type: 'ephemeral',
-           text: 'Please invite Blink to this private/shared channel before using it.',
-         });
-       }
     }
 
-    console.log(err);
   }
 };
