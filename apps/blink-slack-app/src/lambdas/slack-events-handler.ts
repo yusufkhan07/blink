@@ -1,14 +1,14 @@
 import { App, StringIndexed } from '@slack/bolt';
 import serverless from 'serverless-http';
-import { blinkCommandHandler } from '../command-handlers/blink.command-handler';
+import { BlinkCommandHandler } from '../command-handlers/blink.command-handler';
 import { expressReceiver } from '../express-receiver';
 import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest.command-handler';
 import { slack_actions } from '../slack-actions';
-import { messageMenuActionHandler } from '../action-handlers/message-menu.action-handler';
+import { MessageMenuActionHandler } from '../action-handlers/message-menu.action-handler';
 import { slack_events } from '../slack-events';
-import { appHomeOpenedEventHandler } from '../event-handlers/app-home-opened.event-handler';
-import { userMessageExpirationSelectedActionHandler } from '../action-handlers/user-message-expiration-selected.action-handler';
-import { viewDmMessageActionHandler } from '../action-handlers/view-dm-message.action-handler';
+import { AppHomeOpenedEventHandler } from '../event-handlers/app-home-opened.event-handler';
+import { UserMessageExpirationSelectedActionHandler } from '../action-handlers/user-message-expiration-selected.action-handler';
+import { ViewDmMessageActionHandler } from '../action-handlers/view-dm-message.action-handler';
 
 // TODO: setup prettier
 // TODO: setup vs code auto formatting on save
@@ -21,24 +21,44 @@ const app = new App({
   receiver: expressReceiver,
 });
 
-export const configureCommands = (app: App<StringIndexed>) => {
-  app.command('/blink', blinkCommandHandler);
+const blinkCommandHandler = new BlinkCommandHandler(
+  process.env.MessageExpirationHandlerStateMachineArn
+).handle;
+const messageMenuActionHandler = new MessageMenuActionHandler().handle;
+const viewDmMessageActionHandler = new ViewDmMessageActionHandler().handle;
+const userMessageExpirationSelectedActionHandler =
+  new UserMessageExpirationSelectedActionHandler().handle;
+const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler().handle;
 
-  app.command('/blinkmodaltest', blinkmodaltestCommandHandler);
+// Configure the app with commands, actions, and events
+((app: App<StringIndexed>) => {
+  // Configure commands
+  (() => {
+    app.command('/blink', blinkCommandHandler);
 
-  app.action(slack_actions.message_menu, messageMenuActionHandler);
+    app.command('/blinkmodaltest', blinkmodaltestCommandHandler);
+  })();
 
-  app.action(slack_actions.view_dm_message, viewDmMessageActionHandler);
+  // Configure actions
+  (() => {
+    app.action(slack_actions.message_menu, messageMenuActionHandler);
 
-  app.action(
-    slack_actions.user_message_expiration_selected,
-    userMessageExpirationSelectedActionHandler
-  );
+    app.action(slack_actions.view_dm_message, viewDmMessageActionHandler);
 
-  app.event(slack_events.bot_events.app_home_opened, appHomeOpenedEventHandler);
-};
+    app.action(
+      slack_actions.user_message_expiration_selected,
+      userMessageExpirationSelectedActionHandler
+    );
+  })();
 
-configureCommands(app);
+  // Configure events
+  (() => {
+    app.event(
+      slack_events.bot_events.app_home_opened,
+      appHomeOpenedEventHandler
+    );
+  })();
+})(app);
 
 const handler = serverless(expressReceiver.app);
 module.exports.handler = async (event, context) => {

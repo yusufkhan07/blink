@@ -14,232 +14,233 @@ import { UserMessageExpirationSettingsRepository } from '../repositories/user-me
 import { parseExpirationToSeconds } from '../utils/parseExpirationToSeconds';
 import { UserMessageRepository } from '../repositories/user-message.repository';
 
-const stepfunctions = new AWS.StepFunctions();
-const userMessageExpirationSettingsRepository =
-  new UserMessageExpirationSettingsRepository();
-const userMessageRepository = new UserMessageRepository();
+// TODO: Update FAQs to include info about Blink in DMs
 
-const buildExpiresAt = (expirationTimeInSecs: number): ContextBlockElement => {
-  const expirationTimestampInSecs =
-    Math.floor(Date.now() / 1000) + expirationTimeInSecs;
+export class BlinkCommandHandler {
+  private readonly stepfunctions = new AWS.StepFunctions();
+  private readonly userMessageExpirationSettingsRepository =
+    new UserMessageExpirationSettingsRepository();
+  private readonly userMessageRepository = new UserMessageRepository();
 
-  return {
-    type: 'mrkdwn',
-    text: `:hourglass: Expires <!date^${expirationTimestampInSecs}^{date} at {time}|${new Date(
-      expirationTimestampInSecs * 1000
-    ).toLocaleString()}>`,
-  };
-};
+  constructor(
+    private readonly messageExpirationHandlerStateMachineArn: string
+  ) {}
 
-const scheduleMessageExpiry = async (
-  messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput,
-  logger: Logger
-) => {
-  logger.info(
-    'Scheduling message for expiry: ',
-    messageExpirationHandlerStateMachineInput
-  );
+  private buildExpiresAt(expirationTimeInSecs: number): ContextBlockElement {
+    const expirationTimestampInSecs =
+      Math.floor(Date.now() / 1000) + expirationTimeInSecs;
 
-  const messageExpirationHandlerStateMachineArn =
-    process.env.MessageExpirationHandlerStateMachineArn;
+    return {
+      type: 'mrkdwn',
+      text: `:hourglass: Expires <!date^${expirationTimestampInSecs}^{date} at {time}|${new Date(
+        expirationTimestampInSecs * 1000
+      ).toLocaleString()}>`,
+    };
+  }
 
-  await stepfunctions
-    .startExecution({
-      stateMachineArn: messageExpirationHandlerStateMachineArn,
-      input: JSON.stringify(messageExpirationHandlerStateMachineInput),
-    })
-    .promise();
-};
+  private async scheduleMessageExpiry(
+    messageExpirationHandlerStateMachineInput: MessageExpirationHandlerStateMachineInput,
+    logger: Logger
+  ) {
+    logger.info(
+      'Scheduling message for expiry: ',
+      messageExpirationHandlerStateMachineInput
+    );
 
-// Post a new message in a public/private/shared channel or multi person chat
-const postNewMessageInChannel = async (
-  client: WebClient,
-  command: SlashCommand,
-  expirationTimeInSecs: number
-): Promise<any> => {
-  // TODO: Cache this user info to avoid multiple API calls
-  const slackUser = await client.users.info({ user: command.user_id });
+    await this.stepfunctions
+      .startExecution({
+        stateMachineArn: this.messageExpirationHandlerStateMachineArn,
+        input: JSON.stringify(messageExpirationHandlerStateMachineInput),
+      })
+      .promise();
+  }
 
-  // Note: We can use respond() function to reply in DMs but there's no way to update the message later.
-  // So we use postMessage() to send the message and then update it later.
-  return await client.chat.postMessage({
-    attachments: [],
-    channel: command.channel_id,
-    username:
-      slackUser.user.profile.display_name ||
-      slackUser.user.profile.real_name ||
-      command.user_name,
-    icon_url: slackUser.user.profile.image_48,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `:dash: _<@${command.user_id}> sent this disappearing message using blink_`,
+  private async postNewMessageInChannel(
+    client: WebClient,
+    command: SlashCommand,
+    expirationTimeInSecs: number
+  ): Promise<any> {
+    // TODO: Cache this user info to avoid multiple API calls
+    const slackUser = await client.users.info({ user: command.user_id });
+
+    // Note: We can use respond() function to reply in DMs but there's no way to update the message later.
+    // So we use postMessage() to send the message and then update it later.
+    return await client.chat.postMessage({
+      attachments: [],
+      channel: command.channel_id,
+      username:
+        slackUser.user.profile.display_name ||
+        slackUser.user.profile.real_name ||
+        command.user_name,
+      icon_url: slackUser.user.profile.image_48,
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `:dash: _<@${command.user_id}> sent this disappearing message using blink_`,
+          },
+          accessory: {
+            type: 'overflow',
+            action_id: slack_actions.message_menu,
+            options: [
+              {
+                text: {
+                  type: 'plain_text',
+                  emoji: true,
+                  text: ':wastebasket:  Delete message',
+                },
+                value: 'value-0',
+              },
+            ],
+          },
         },
-        accessory: {
-          type: 'overflow',
-          action_id: slack_actions.message_menu,
-          options: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `${command.text}`,
+          },
+        },
+        { type: 'divider' },
+        {
+          type: 'context',
+          elements: [this.buildExpiresAt(expirationTimeInSecs)],
+        },
+      ],
+      text: `:dash: <@${command.user_id}> sent this disappearing message using blink`,
+    });
+  }
+
+  private async postNewMessageInDirectMessage({
+    command,
+    respond,
+    expirationTimeInSecs,
+  }: Pick<
+    SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>,
+    'command' | 'respond'
+  > & { expirationTimeInSecs: number }) {
+    const messageId = new Date().getTime().toString() + '-' + randomUUID();
+
+    await this.userMessageRepository.save({
+      id: messageId,
+      text: command.text,
+      created_at: new Date().toISOString(),
+      expire_at: new Date(
+        Date.now() + expirationTimeInSecs * 1000
+      ).toISOString(),
+    });
+
+    await respond({
+      response_type: 'in_channel',
+      text: 'Blink is not available in direct messages. Please use it in a public/private channel.',
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `:dash: <@${command.user_id}> sent this disappearing message using blink`,
+          },
+        },
+        {
+          type: 'actions',
+          elements: [
             {
+              type: 'button',
               text: {
                 type: 'plain_text',
+                text: 'View Message',
                 emoji: true,
-                text: ':wastebasket:  Delete message',
               },
-              value: 'value-0',
+              action_id: slack_actions.view_dm_message,
+              value: messageId,
+              style: 'primary',
             },
           ],
         },
-      },
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `${command.text}`,
+        { type: 'divider' },
+        {
+          type: 'context',
+          elements: [this.buildExpiresAt(expirationTimeInSecs)],
         },
-      },
-      {
-        type: 'divider',
-      },
-      {
-        type: 'context',
-        elements: [buildExpiresAt(expirationTimeInSecs)],
-      },
-    ],
-    text: `:dash: <@${command.user_id}> sent this disappearing message using blink`,
-  });
-};
-
-const postNewMessageInDirectMessage = async ({
-  command,
-  respond,
-  expirationTimeInSecs,
-}: Pick<
-  SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>,
-  'command' | 'respond'
-> & { expirationTimeInSecs: number }) => {
-  const messageId = new Date().getTime().toString() + '-' + randomUUID();
-
-  await userMessageRepository.save({
-    id: messageId,
-    text: command.text,
-    created_at: new Date().toISOString(),
-    expire_at: new Date(Date.now() + expirationTimeInSecs * 1000).toISOString(),
-  });
-
-  await respond({
-    response_type: 'in_channel',
-    text: 'Blink is not available in direct messages. Please use it in a public/private channel.',
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `:dash: <@${command.user_id}> sent this disappearing message using blink`,
-        },
-      },
-      {
-        type: 'actions',
-        elements: [
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'View Message',
-              emoji: true,
-            },
-            action_id: slack_actions.view_dm_message,
-            value: messageId,
-            style: 'primary',
-          },
-        ],
-      },
-      {
-        type: 'divider',
-      },
-      {
-        type: 'context',
-        elements: [buildExpiresAt(expirationTimeInSecs)],
-      },
-    ],
-  });
-};
-
-export const blinkCommandHandler = async ({
-  ack,
-  command,
-  respond,
-  logger,
-  client,
-}: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
-  logger.info('blink command handler started execution');
-
-  await ack();
-
-  const userExpirationTimeSettingValue =
-    await userMessageExpirationSettingsRepository.getExpirationTime(
-      command.user_id
-    );
-  const expirationTimeInSecs = userExpirationTimeSettingValue
-    ? parseExpirationToSeconds(userExpirationTimeSettingValue)
-    : constants.defaultMessageExpiryInSecs;
-
-  if (command.channel_name === 'directmessage') {
-    await postNewMessageInDirectMessage({
-      command,
-      respond,
-      expirationTimeInSecs,
+      ],
     });
-
-    return;
   }
 
-  try {
-    logger.info('Creating new message');
+  public handle = async ({
+    ack,
+    command,
+    respond,
+    logger,
+    client,
+  }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
+    logger.info('blink command handler started execution');
 
-    const postedMessage = await postNewMessageInChannel(
-      client,
-      command,
-      expirationTimeInSecs
-    );
+    await ack();
 
-    logger.info('Created new message');
+    const userExpirationTimeSettingValue =
+      await this.userMessageExpirationSettingsRepository.getExpirationTime(
+        command.user_id
+      );
+    const expirationTimeInSecs = userExpirationTimeSettingValue
+      ? parseExpirationToSeconds(userExpirationTimeSettingValue)
+      : constants.defaultMessageExpiryInSecs;
 
-    await scheduleMessageExpiry(
-      {
-        expire_at: new Date(
-          (Math.floor(Date.now() / 1000) + expirationTimeInSecs) * 1000
-        ).toISOString(),
-        team_id: command.team_id,
-        ts: postedMessage.ts,
-        channel_id: command.channel_id,
-        user_id: command.user_id,
-      },
-      logger
-    );
-  } catch (err) {
-    logger.error(err);
+    if (command.channel_name === 'directmessage') {
+      await this.postNewMessageInDirectMessage({
+        command,
+        respond,
+        expirationTimeInSecs,
+      });
 
-    // Using if-else instead of posting a message in try block could improve performance
-    if (err.data?.error === 'channel_not_found') {
-      if (command.channel_name.startsWith('mpdm-')) {
-        await postNewMessageInDirectMessage({
-          command,
-          respond,
-          expirationTimeInSecs,
-        });
+      return;
+    }
+    try {
+      logger.info('Creating new message');
 
-        return;
-      } else {
-        // Notes: Slack bot can't join a private channel automatically. It has to be invited by a user.
-        await respond({
-          response_type: 'ephemeral',
-          text: 'Please invite Blink using `/invite @Blink` in this private/shared channel before using it.',
-        });
+      const postedMessage = await this.postNewMessageInChannel(
+        client,
+        command,
+        expirationTimeInSecs
+      );
 
-        return;
+      logger.info('Created new message');
+
+      await this.scheduleMessageExpiry(
+        {
+          expire_at: new Date(
+            (Math.floor(Date.now() / 1000) + expirationTimeInSecs) * 1000
+          ).toISOString(),
+          team_id: command.team_id,
+          ts: postedMessage.ts,
+          channel_id: command.channel_id,
+          user_id: command.user_id,
+        },
+        logger
+      );
+    } catch (err) {
+      logger.error(err);
+
+      // Using if-else instead of posting a message in try block could improve performance
+      if (err.data?.error === 'channel_not_found') {
+        if (command.channel_name.startsWith('mpdm-')) {
+          await this.postNewMessageInDirectMessage({
+            command,
+            respond,
+            expirationTimeInSecs,
+          });
+
+          return;
+        } else {
+          // Notes: Slack bot can't join a private channel automatically. It has to be invited by a user.
+          await respond({
+            response_type: 'ephemeral',
+            text: 'Please invite Blink using `/invite @Blink` in this private/shared channel before using it.',
+          });
+
+          return;
+        }
       }
     }
-  }
-};
+  };
+}
