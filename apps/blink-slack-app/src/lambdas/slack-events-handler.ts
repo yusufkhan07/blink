@@ -1,47 +1,94 @@
 import { App, StringIndexed } from '@slack/bolt';
 import serverless from 'serverless-http';
-import { blinkCommandHandler } from '../command-handlers/blink.command-handler';
+import { BlinkCommandHandler } from '../command-handlers/blink.command-handler';
 import { expressReceiver } from '../express-receiver';
 import { blinkmodaltestCommandHandler } from '../command-handlers/blinkmodaltest.command-handler';
 import { slack_actions } from '../slack-actions';
-import { messageMenuActionHandler } from '../action-handlers/message-menu.action-handler';
+import { MessageMenuActionHandler } from '../action-handlers/message-menu.action-handler';
 import { slack_events } from '../slack-events';
-import { appHomeOpenedEventHandler } from '../event-handlers/app-home-opened.event-handler';
-import { userMessageExpirationSelectedActionHandler } from '../action-handlers/user-message-expiration-selected.action-handler';
-import { viewDmMessageActionHandler } from '../action-handlers/view-dm-message.action-handler';
+import { AppHomeOpenedEventHandler } from '../event-handlers/app-home-opened.event-handler';
+import { UserMessageExpirationSelectedActionHandler } from '../action-handlers/user-message-expiration-selected.action-handler';
+import { ViewDmMessageActionHandler } from '../action-handlers/view-dm-message.action-handler';
+import { UserMessageExpirationSettingsRepository } from '../repositories/user-message-expiration-settings.repository';
+import { UserMessageRepository } from '../repositories/user-message.repository';
+import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
+import { Config } from '../config';
 
-// TODO: setup prettier
-// TODO: setup vs code auto formatting on save
+const config = new Config();
 
-// Feature 1:
-// User types /blink message
-// It's displayed ONCE for EACH User in Chat
+// Repositories
+const slackOAuthTokensRepository = new SlackOAuthTokensRepository(
+  config.tableNames.slackOAuthTokensTable
+);
+const userMessageExpirationSettingsRepository =
+  new UserMessageExpirationSettingsRepository(
+    config.tableNames.userMessageExpirationSettingsTable
+  );
+const userMessageRepository = new UserMessageRepository(
+  config.tableNames.userMessagesTable
+);
 
-const app = new App({
-  receiver: expressReceiver,
+// Handlers
+const blinkCommandHandler = new BlinkCommandHandler(
+  config.messageExpirationHandlerStateMachineArn,
+  userMessageExpirationSettingsRepository,
+  userMessageRepository
+).handle;
+const messageMenuActionHandler = new MessageMenuActionHandler().handle;
+const viewDmMessageActionHandler = new ViewDmMessageActionHandler(
+  userMessageRepository
+).handle;
+const userMessageExpirationSelectedActionHandler =
+  new UserMessageExpirationSelectedActionHandler(
+    userMessageExpirationSettingsRepository
+  ).handle;
+const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler(
+  userMessageExpirationSettingsRepository
+).handle;
+
+// Build the app
+// Note: The expressReceiver is used to handle Slack events and commands
+const expressReceiverObject = expressReceiver(slackOAuthTokensRepository, {
+  signingSecret: config.slackSigningSecret,
+  clientId: config.slackClientId,
+  clientSecret: config.slackClientSecret,
 });
 
-export const configureCommands = (app: App<StringIndexed>) => {
-  app.command('/blink', blinkCommandHandler);
+const app = new App({
+  receiver: expressReceiverObject,
+});
 
-  app.command('/blinkmodaltest', blinkmodaltestCommandHandler);
+// Configure the app with commands, actions, and events
+((app: App<StringIndexed>) => {
+  // Configure commands
+  (() => {
+    app.command('/blink', blinkCommandHandler);
 
-  app.action(slack_actions.message_menu, messageMenuActionHandler);
+    app.command('/blinkmodaltest', blinkmodaltestCommandHandler);
+  })();
 
-  app.action(slack_actions.view_dm_message, viewDmMessageActionHandler);
+  // Configure actions
+  (() => {
+    app.action(slack_actions.message_menu, messageMenuActionHandler);
 
-  app.action(
-    slack_actions.user_message_expiration_selected,
-    userMessageExpirationSelectedActionHandler
-  );
+    app.action(slack_actions.view_dm_message, viewDmMessageActionHandler);
 
-  app.event(slack_events.bot_events.app_home_opened, appHomeOpenedEventHandler);
-};
+    app.action(
+      slack_actions.user_message_expiration_selected,
+      userMessageExpirationSelectedActionHandler
+    );
+  })();
 
-configureCommands(app);
+  // Configure events
+  (() => {
+    app.event(
+      slack_events.bot_events.app_home_opened,
+      appHomeOpenedEventHandler
+    );
+  })();
+})(app);
 
-const handler = serverless(expressReceiver.app);
-module.exports.handler = async (event, context) => {
+module.exports.handler = serverless((event, context) => {
   // Check if this is a warm-up request
   if (event.source === 'aws.events') {
     console.log('Warm-up request received. Keeping the Lambda warm.');
@@ -52,9 +99,8 @@ module.exports.handler = async (event, context) => {
     };
   }
 
-  const result = await handler(event, context);
-  return result;
-};
+  return expressReceiverObject.app(event, context);
+});
 
 // TODO: Fix cold starts, taking more than 3 secs by reducing bundle size
 

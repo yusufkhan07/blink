@@ -15,59 +15,67 @@ const EXPIRATION_OPTIONS = [
   { label: '7 days', value: '168h' },
 ];
 
-const userMessageExpirationSettingsRepository =
-  new UserMessageExpirationSettingsRepository();
+export class AppHomeOpenedEventHandler {
+  constructor(
+    private readonly userMessageExpirationSettingsRepository: UserMessageExpirationSettingsRepository
+  ) {}
 
-export const appHomeOpenedEventHandler = async ({
-  event,
-  client,
-}: SlackEventMiddlewareArgs<'app_home_opened'> &
-  AllMiddlewareArgs<StringIndexed>) => {
-  const existingSetting =
-    await userMessageExpirationSettingsRepository.getExpirationTime(event.user) ?? '24h';
+  public handle = async ({
+    event,
+    client,
+  }: SlackEventMiddlewareArgs<'app_home_opened'> &
+    AllMiddlewareArgs<StringIndexed>) => {
+    const existingSetting =
+      (await this.userMessageExpirationSettingsRepository.getExpirationTime(
+        event.user
+      )) ?? '24h';
 
-  await client.views.publish({
-    user_id: event.user,
-    view: {
-      type: 'home',
-      blocks: [
-        {
-          type: 'header',
-          text: {
-            type: 'plain_text',
-            text: '📅 Message Expiration Settings',
+    await client.views.publish({
+      user_id: event.user,
+      view: {
+        type: 'home',
+        blocks: [
+          {
+            type: 'header',
+            text: {
+              type: 'plain_text',
+              text: '📅 Message Expiration Settings',
+            },
           },
-        },
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: 'Choose how long your messages should last. This setting applies *only to new messages* you send using Blink.',
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: 'Choose how long your messages should last. This setting applies *only to new messages* you send using Blink.',
+            },
           },
-        },
-        {
-          type: 'actions',
-          elements: [
-            {
-              type: 'static_select',
-              action_id: slack_actions.user_message_expiration_selected,
-              placeholder: {
-                type: 'plain_text',
-                text: 'Select expiration time',
-                emoji: true,
-              },
-              options: EXPIRATION_OPTIONS.map((opt) => ({
-                text: {
+          {
+            type: 'actions',
+            elements: [
+              {
+                type: 'static_select',
+                action_id: slack_actions.user_message_expiration_selected,
+                placeholder: {
                   type: 'plain_text',
-                  text: opt.value == existingSetting ? `*${opt.label} (Current setting)*` : opt.label,
+                  text: 'Select expiration time',
                   emoji: true,
                 },
-                value: opt.value,
-              })),
-            },
-          ],
-        },
-      ],
-    },
-  });
-};
+                options: EXPIRATION_OPTIONS.map((opt) => ({
+                  text: {
+                    type: 'plain_text',
+                    text:
+                      opt.value == existingSetting
+                        ? `*${opt.label} (Current setting)*`
+                        : opt.label,
+                    emoji: true,
+                  },
+                  value: opt.value,
+                })),
+              },
+            ],
+          },
+        ],
+      },
+    });
+  };
+}

@@ -9,7 +9,7 @@ export interface UserMessage {
 }
 
 export class UserMessageRepository {
-  private readonly tableName: string = process.env.USER_MESSAGES_TABLENAME;
+  constructor(private readonly tableName: string) {}
 
   async save(message: UserMessage) {
     const params = {
