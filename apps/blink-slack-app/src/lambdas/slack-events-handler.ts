@@ -12,22 +12,25 @@ import { ViewDmMessageActionHandler } from '../action-handlers/view-dm-message.a
 import { UserMessageExpirationSettingsRepository } from '../repositories/user-message-expiration-settings.repository';
 import { UserMessageRepository } from '../repositories/user-message.repository';
 import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
+import { Config } from '../config';
+
+const config = new Config();
 
 // Repositories
 const slackOAuthTokensRepository = new SlackOAuthTokensRepository(
-  process.env.SLACK_OAUTHTOKENS_TABLENAME
+  config.tableNames.slackOAuthTokensTable
 );
 const userMessageExpirationSettingsRepository =
   new UserMessageExpirationSettingsRepository(
-    process.env.USER_MESSAGE_EXPIRATION_SETTINGS_TABLENAME
+    config.tableNames.userMessageExpirationSettingsTable
   );
 const userMessageRepository = new UserMessageRepository(
-  process.env.USER_MESSAGES_TABLENAME
+  config.tableNames.userMessagesTable
 );
 
 // Handlers
 const blinkCommandHandler = new BlinkCommandHandler(
-  process.env.MessageExpirationHandlerStateMachineArn,
+  config.messageExpirationHandlerStateMachineArn,
   userMessageExpirationSettingsRepository,
   userMessageRepository
 ).handle;
@@ -46,9 +49,9 @@ const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler(
 // Build the app
 // Note: The expressReceiver is used to handle Slack events and commands
 const expressReceiverObject = expressReceiver(slackOAuthTokensRepository, {
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  clientId: process.env.SLACK_CLIENT_ID,
-  clientSecret: process.env.SLACK_CLIENT_SECRET,
+  signingSecret: config.slackSigningSecret,
+  clientId: config.slackClientId,
+  clientSecret: config.slackClientSecret,
 });
 
 const app = new App({
@@ -102,5 +105,3 @@ module.exports.handler = serverless((event, context) => {
 // TODO: Fix cold starts, taking more than 3 secs by reducing bundle size
 
 // TODO: a bug in prod: https://github.com/slackapi/bolt-js/issues/462
-
-// TODO: move all process.env variables here.
