@@ -2,8 +2,10 @@ import { App } from '@slack/bolt';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
 import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
 import { Config } from '../config';
+import { SlackUiBuilder } from '../slack-ui-builder';
 
 const config = new Config();
+const slackUiBuilder = new SlackUiBuilder();
 
 const signingSecret = config.slackSigningSecret;
 const slackOAuthTokensRepository = new SlackOAuthTokensRepository(
@@ -26,26 +28,7 @@ const hideMessage = async (
     await app.client.chat.update({
       ts: event.ts,
       channel: event.channel_id,
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
-          },
-        },
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `_This message expired on <!date^${Math.floor(
-              Date.now() / 1000
-            )}^{date} at {time}|${new Date(
-              Math.floor(Date.now() / 1000) * 1000
-            ).toLocaleString()}>_`,
-          },
-        },
-      ],
+      blocks: slackUiBuilder.buildExpiredMessage(event.user_id),
       text: `:dash: _<@${event.user_id}> sent this disappearing message using blink_`,
     });
   } catch (error) {
