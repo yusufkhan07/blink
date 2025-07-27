@@ -25,17 +25,6 @@ const userMessageRepository = new UserMessageRepository(
   process.env.USER_MESSAGES_TABLENAME
 );
 
-// Build the app
-// Note: The expressReceiver is used to handle Slack events and commands
-const expressReceiverObject = expressReceiver(slackOAuthTokensRepository, {
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  clientId: process.env.SLACK_CLIENT_ID,
-  clientSecret: process.env.SLACK_CLIENT_SECRET,
-});
-const app = new App({
-  receiver: expressReceiverObject,
-});
-
 // Handlers
 const blinkCommandHandler = new BlinkCommandHandler(
   process.env.MessageExpirationHandlerStateMachineArn,
@@ -53,6 +42,18 @@ const userMessageExpirationSelectedActionHandler =
 const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler(
   userMessageExpirationSettingsRepository
 ).handle;
+
+// Build the app
+// Note: The expressReceiver is used to handle Slack events and commands
+const expressReceiverObject = expressReceiver(slackOAuthTokensRepository, {
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  clientId: process.env.SLACK_CLIENT_ID,
+  clientSecret: process.env.SLACK_CLIENT_SECRET,
+});
+
+const app = new App({
+  receiver: expressReceiverObject,
+});
 
 // Configure the app with commands, actions, and events
 ((app: App<StringIndexed>) => {
@@ -84,8 +85,7 @@ const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler(
   })();
 })(app);
 
-const handler = serverless(expressReceiverObject.app);
-module.exports.handler = async (event, context) => {
+module.exports.handler = serverless((event, context) => {
   // Check if this is a warm-up request
   if (event.source === 'aws.events') {
     console.log('Warm-up request received. Keeping the Lambda warm.');
@@ -96,9 +96,8 @@ module.exports.handler = async (event, context) => {
     };
   }
 
-  const result = await handler(event, context);
-  return result;
-};
+  return expressReceiverObject.app(event, context);
+});
 
 // TODO: Fix cold starts, taking more than 3 secs by reducing bundle size
 
