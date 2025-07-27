@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export class UserMessageExpirationSettingsRepository {
-  private readonly tableName: string = process.env.USER_MESSAGE_EXPIRATION_SETTINGS_TABLENAME;
+  constructor(private readonly tableName: string) {}
 
   async saveExpirationTime(userId: string, expirationTime: string) {
     const params = {
@@ -12,7 +12,7 @@ export class UserMessageExpirationSettingsRepository {
         expirationTime,
       },
     };
-    
+
     await dynamoDb.put(params).promise();
   }
 
@@ -21,7 +21,7 @@ export class UserMessageExpirationSettingsRepository {
       TableName: this.tableName,
       Key: { userId },
     };
-    
+
     const result = await dynamoDb.get(params).promise();
     return result.Item?.expirationTime;
   }

@@ -3,7 +3,7 @@ import AWS from 'aws-sdk';
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export class SlackOAuthTokensRepository {
-  private readonly tableName: string = process.env.SLACK_OAUTHTOKENS_TABLENAME;
+  constructor(private readonly tableName: string) {}
 
   storeInstallation = async (installation: Installation) => {
     const params = {

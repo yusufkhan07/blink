@@ -9,26 +9,50 @@ import { slack_events } from '../slack-events';
 import { AppHomeOpenedEventHandler } from '../event-handlers/app-home-opened.event-handler';
 import { UserMessageExpirationSelectedActionHandler } from '../action-handlers/user-message-expiration-selected.action-handler';
 import { ViewDmMessageActionHandler } from '../action-handlers/view-dm-message.action-handler';
+import { UserMessageExpirationSettingsRepository } from '../repositories/user-message-expiration-settings.repository';
+import { UserMessageRepository } from '../repositories/user-message.repository';
+import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
 
-// TODO: setup prettier
-// TODO: setup vs code auto formatting on save
+// Repositories
+const slackOAuthTokensRepository = new SlackOAuthTokensRepository(
+  process.env.SLACK_OAUTHTOKENS_TABLENAME
+);
+const userMessageExpirationSettingsRepository =
+  new UserMessageExpirationSettingsRepository(
+    process.env.USER_MESSAGE_EXPIRATION_SETTINGS_TABLENAME
+  );
+const userMessageRepository = new UserMessageRepository(
+  process.env.USER_MESSAGES_TABLENAME
+);
 
-// Feature 1:
-// User types /blink message
-// It's displayed ONCE for EACH User in Chat
-
+// Build the app
+// Note: The expressReceiver is used to handle Slack events and commands
+const expressReceiverObject = expressReceiver(slackOAuthTokensRepository, {
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  clientId: process.env.SLACK_CLIENT_ID,
+  clientSecret: process.env.SLACK_CLIENT_SECRET,
+});
 const app = new App({
-  receiver: expressReceiver,
+  receiver: expressReceiverObject,
 });
 
+// Handlers
 const blinkCommandHandler = new BlinkCommandHandler(
-  process.env.MessageExpirationHandlerStateMachineArn
+  process.env.MessageExpirationHandlerStateMachineArn,
+  userMessageExpirationSettingsRepository,
+  userMessageRepository
 ).handle;
 const messageMenuActionHandler = new MessageMenuActionHandler().handle;
-const viewDmMessageActionHandler = new ViewDmMessageActionHandler().handle;
+const viewDmMessageActionHandler = new ViewDmMessageActionHandler(
+  userMessageRepository
+).handle;
 const userMessageExpirationSelectedActionHandler =
-  new UserMessageExpirationSelectedActionHandler().handle;
-const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler().handle;
+  new UserMessageExpirationSelectedActionHandler(
+    userMessageExpirationSettingsRepository
+  ).handle;
+const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler(
+  userMessageExpirationSettingsRepository
+).handle;
 
 // Configure the app with commands, actions, and events
 ((app: App<StringIndexed>) => {
@@ -60,7 +84,7 @@ const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler().handle;
   })();
 })(app);
 
-const handler = serverless(expressReceiver.app);
+const handler = serverless(expressReceiverObject.app);
 module.exports.handler = async (event, context) => {
   // Check if this is a warm-up request
   if (event.source === 'aws.events') {
@@ -79,3 +103,5 @@ module.exports.handler = async (event, context) => {
 // TODO: Fix cold starts, taking more than 3 secs by reducing bundle size
 
 // TODO: a bug in prod: https://github.com/slackapi/bolt-js/issues/462
+
+// TODO: move all process.env variables here.

@@ -6,8 +6,9 @@ import {
 import { UserMessageExpirationSettingsRepository } from '../repositories/user-message-expiration-settings.repository';
 
 export class UserMessageExpirationSelectedActionHandler {
-  private readonly userMessageExpirationSettingsRepository =
-    new UserMessageExpirationSettingsRepository();
+  constructor(
+    private readonly userMessageExpirationSettingsRepository: UserMessageExpirationSettingsRepository
+  ) {}
 
   public handle = async ({
     ack,

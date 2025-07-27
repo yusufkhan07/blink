@@ -6,7 +6,7 @@ import {
 import { UserMessageRepository } from '../repositories/user-message.repository';
 
 export class ViewDmMessageActionHandler {
-  private readonly userMessageRepository = new UserMessageRepository();
+  constructor(private readonly userMessageRepository: UserMessageRepository) {}
 
   public handle = async ({
     ack,

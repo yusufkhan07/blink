@@ -2,15 +2,21 @@ import { App } from '@slack/bolt';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
 import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
 
-const slackOAuthTokensRepository = new SlackOAuthTokensRepository();
+const signingSecret = process.env.SLACK_SIGNING_SECRET;
+const slackOAuthTokensRepository = new SlackOAuthTokensRepository(
+  process.env.SLACK_OAUTHTOKENS_TABLENAME
+);
 
 const hideMessage = async (
   event: MessageExpirationHandlerStateMachineInput
 ) => {
+  const botToken = (
+    await slackOAuthTokensRepository.fetchInstallation(event.team_id)
+  ).bot?.token;
+
   const app = new App({
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-    token: (await slackOAuthTokensRepository.fetchInstallation(event.team_id))
-      .bot?.token,
+    signingSecret,
+    token: botToken,
   });
 
   try {

@@ -16,8 +16,9 @@ const EXPIRATION_OPTIONS = [
 ];
 
 export class AppHomeOpenedEventHandler {
-  private readonly userMessageExpirationSettingsRepository =
-    new UserMessageExpirationSettingsRepository();
+  constructor(
+    private readonly userMessageExpirationSettingsRepository: UserMessageExpirationSettingsRepository
+  ) {}
 
   public handle = async ({
     event,

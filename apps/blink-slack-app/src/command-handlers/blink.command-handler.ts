@@ -18,12 +18,11 @@ import { UserMessageRepository } from '../repositories/user-message.repository';
 
 export class BlinkCommandHandler {
   private readonly stepfunctions = new AWS.StepFunctions();
-  private readonly userMessageExpirationSettingsRepository =
-    new UserMessageExpirationSettingsRepository();
-  private readonly userMessageRepository = new UserMessageRepository();
 
   constructor(
-    private readonly messageExpirationHandlerStateMachineArn: string
+    private readonly messageExpirationHandlerStateMachineArn: string,
+    private readonly userMessageExpirationSettingsRepository: UserMessageExpirationSettingsRepository,
+    private readonly userMessageRepository: UserMessageRepository
   ) {}
 
   private buildExpiresAt(expirationTimeInSecs: number): ContextBlockElement {
