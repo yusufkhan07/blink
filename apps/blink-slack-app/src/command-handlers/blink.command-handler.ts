@@ -86,9 +86,8 @@ export class BlinkCommandHandler {
       id: messageId,
       text: command.text,
       created_at: new Date().toISOString(),
-      expire_at: new Date(
-        Date.now() + expirationTimeInSecs * 1000
-      ).toISOString(),
+      expire_at:
+        new Date(Date.now() + expirationTimeInSecs * 1000).getTime() / 1000,
     });
 
     const blocks = this.slackUiBuilder.buildPrivateMessage(
