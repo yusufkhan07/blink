@@ -107,19 +107,7 @@ export class SlackUiBuilder {
     ];
   }
 
-  buildPrivateMessageViewer(message?: string): AnyBlock[] {
-    if (!message) {
-      return [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: 'This message has expired or does not exist.',
-          },
-        },
-      ];
-    }
-
+  buildPrivateMessageViewer(message: string): AnyBlock[] {
     return [
       {
         type: 'section',

@@ -4,7 +4,8 @@ import {
   StringIndexed,
 } from '@slack/bolt';
 
-const getMessageCreatedBy = (txt: string): string | null => {
+// TODO: move to its own utility file
+export const getMessageCreatedBy = (txt: string): string | null => {
   const match = txt.match(/<@(\w+)>/);
 
   if (match && match[1]) {

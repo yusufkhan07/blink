@@ -5,6 +5,7 @@ import {
 } from '@slack/bolt';
 import { UserMessageRepository } from '../repositories/user-message.repository';
 import { SlackUiBuilder } from '../slack-ui-builder';
+import { getMessageCreatedBy } from './message-menu.action-handler';
 
 export class ViewDmMessageActionHandler {
   constructor(
@@ -18,6 +19,7 @@ export class ViewDmMessageActionHandler {
     client,
     logger,
     action,
+    respond,
   }: SlackActionMiddlewareArgs &
     AllMiddlewareArgs<StringIndexed>): Promise<void> => {
     await ack();
@@ -27,6 +29,20 @@ export class ViewDmMessageActionHandler {
     const message = (
       await this.userMessageRepository.getValidOrDeleteExpiredMessage(messageId)
     )?.text;
+
+    if (!message) {
+      const messageSenderId = getMessageCreatedBy(
+        body['message']['blocks'][0]['text']['text']
+      );
+
+      await respond({
+        text: ':dash: _<@${event.user_id}> sent this disappearing message using blink_',
+        // TODO: We need to pass expiration time as well.
+        blocks: this.slackUiBuilder.buildExpiredMessage(messageSenderId),
+      });
+
+      return;
+    }
 
     await client.views.open({
       trigger_id: trigger_id,
