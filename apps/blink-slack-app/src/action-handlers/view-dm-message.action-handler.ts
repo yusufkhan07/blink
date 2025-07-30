@@ -45,7 +45,6 @@ export class ViewDmMessageActionHandler {
 
       await respond({
         text: ':dash: _<@${event.user_id}> sent this disappearing message using blink_',
-        // TODO: We need to pass expiration time as well.
         blocks: this.slackUiBuilder.buildExpiredMessage(
           messageSenderId,
           expiresAt.getTime()
