@@ -4,9 +4,17 @@ import {
   StringIndexed,
 } from '@slack/bolt';
 import { UserMessageRepository } from '../repositories/user-message.repository';
+import {
+  getMessageCreatedBy,
+  getUtcDateFromSlackDate,
+  SlackUiBuilder,
+} from '../slack-ui-builder';
 
 export class ViewDmMessageActionHandler {
-  constructor(private readonly userMessageRepository: UserMessageRepository) {}
+  constructor(
+    private readonly userMessageRepository: UserMessageRepository,
+    private readonly slackUiBuilder: SlackUiBuilder
+  ) {}
 
   public handle = async ({
     ack,
@@ -14,15 +22,37 @@ export class ViewDmMessageActionHandler {
     client,
     logger,
     action,
+    respond,
   }: SlackActionMiddlewareArgs &
     AllMiddlewareArgs<StringIndexed>): Promise<void> => {
     await ack();
 
     const messageId = action['value'];
     const trigger_id = body['trigger_id'];
-    const message = (
-      await this.userMessageRepository.getValidOrDeleteExpiredMessage(messageId)
-    )?.text;
+    const message =
+      await this.userMessageRepository.getValidOrDeleteExpiredMessage(
+        messageId
+      );
+
+    if (!message?.text) {
+      const messageSenderId = getMessageCreatedBy(
+        body['message']['blocks'][0]['text']['text']
+      );
+
+      const expiresAt = getUtcDateFromSlackDate(
+        body['message']['blocks'][3]['elements'][0]['text']
+      );
+
+      await respond({
+        text: ':dash: _<@${event.user_id}> sent this disappearing message using blink_',
+        blocks: this.slackUiBuilder.buildExpiredMessage(
+          messageSenderId,
+          expiresAt.getTime()
+        ),
+      });
+
+      return;
+    }
 
     await client.views.open({
       trigger_id: trigger_id,
@@ -36,44 +66,7 @@ export class ViewDmMessageActionHandler {
           type: 'plain_text',
           text: 'Close',
         },
-        blocks: message
-          ? [
-              {
-                type: 'section',
-                text: {
-                  type: 'mrkdwn',
-                  text: '*Your secure message:*',
-                },
-              },
-              {
-                type: 'section',
-                text: {
-                  type: 'mrkdwn',
-                  text: message,
-                },
-              },
-              {
-                type: 'divider',
-              },
-              {
-                type: 'context',
-                elements: [
-                  {
-                    type: 'mrkdwn',
-                    text: ':information_source: *Privacy Notice:* Messages sent with Blink in direct messages (DMs) are temporarily stored by Blink until they expire. However, messages sent in channels are never stored by Blink. For maximum privacy, we recommend using Blink in channels rather than DMs.',
-                  },
-                ],
-              },
-            ]
-          : [
-              {
-                type: 'section',
-                text: {
-                  type: 'mrkdwn',
-                  text: 'This message has expired or does not exist.',
-                },
-              },
-            ],
+        blocks: this.slackUiBuilder.buildPrivateMessageViewer(message.text),
       },
     });
   };

@@ -5,7 +5,7 @@ export interface UserMessage {
   id: string;
   text: string;
   created_at: string;
-  expire_at: string;
+  expire_at: number;
 }
 
 export class UserMessageRepository {
@@ -42,7 +42,7 @@ export class UserMessageRepository {
     if (!item) return;
 
     // Check if expired (expire_at should be epoch seconds)
-    if (new Date(item.expire_at) < new Date()) {
+    if (new Date(item.expire_at * 1000) < new Date()) {
       await this.delete(id);
       return;
     }

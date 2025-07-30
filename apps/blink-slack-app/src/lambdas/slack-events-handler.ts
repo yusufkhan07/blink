@@ -13,8 +13,11 @@ import { UserMessageExpirationSettingsRepository } from '../repositories/user-me
 import { UserMessageRepository } from '../repositories/user-message.repository';
 import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
 import { Config } from '../config';
+import { SlackUiBuilder } from '../slack-ui-builder';
 
 const config = new Config();
+
+const slackUiBuilder = new SlackUiBuilder();
 
 // Repositories
 const slackOAuthTokensRepository = new SlackOAuthTokensRepository(
@@ -32,18 +35,21 @@ const userMessageRepository = new UserMessageRepository(
 const blinkCommandHandler = new BlinkCommandHandler(
   config.messageExpirationHandlerStateMachineArn,
   userMessageExpirationSettingsRepository,
-  userMessageRepository
+  userMessageRepository,
+  slackUiBuilder
 ).handle;
 const messageMenuActionHandler = new MessageMenuActionHandler().handle;
 const viewDmMessageActionHandler = new ViewDmMessageActionHandler(
-  userMessageRepository
+  userMessageRepository,
+  slackUiBuilder
 ).handle;
 const userMessageExpirationSelectedActionHandler =
   new UserMessageExpirationSelectedActionHandler(
     userMessageExpirationSettingsRepository
   ).handle;
 const appHomeOpenedEventHandler = new AppHomeOpenedEventHandler(
-  userMessageExpirationSettingsRepository
+  userMessageExpirationSettingsRepository,
+  slackUiBuilder
 ).handle;
 
 // Build the app
