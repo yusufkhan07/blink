@@ -15,6 +15,20 @@ const EXPIRATION_OPTIONS = [
   { label: '7 days', value: '168h' },
 ];
 
+export const getUtcDateFromSlackDate = (str: string) =>
+  new Date(parseInt(str.match(/<!date\^(\d+)\^/)?.[1] || '0', 10) * 1000);
+
+// TODO: move to its own utility file
+export const getMessageCreatedBy = (txt: string): string | null => {
+  const match = txt.match(/<@(\w+)>/);
+
+  if (match && match[1]) {
+    return match[1];
+  }
+
+  return null;
+};
+
 export class SlackUiBuilder {
   private buildExpiresAt(expirationTimeInSecs: number): ContextBlockElement {
     const expirationTimestampInSecs =
@@ -182,7 +196,10 @@ export class SlackUiBuilder {
     ];
   }
 
-  buildExpiredMessage(eventUserId: string): (Block | KnownBlock)[] {
+  buildExpiredMessage(
+    eventUserId: string,
+    expiryTime = Date.now()
+  ): (Block | KnownBlock)[] {
     return [
       {
         type: 'section',
@@ -196,9 +213,9 @@ export class SlackUiBuilder {
         text: {
           type: 'mrkdwn',
           text: `_This message expired on <!date^${Math.floor(
-            Date.now() / 1000
+            expiryTime / 1000
           )}^{date} at {time}|${new Date(
-            Math.floor(Date.now() / 1000) * 1000
+            Math.floor(expiryTime / 1000) * 1000
           ).toLocaleString()}>_`,
         },
       },

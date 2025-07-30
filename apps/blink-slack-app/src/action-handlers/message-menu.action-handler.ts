@@ -3,17 +3,7 @@ import {
   SlackActionMiddlewareArgs,
   StringIndexed,
 } from '@slack/bolt';
-
-// TODO: move to its own utility file
-export const getMessageCreatedBy = (txt: string): string | null => {
-  const match = txt.match(/<@(\w+)>/);
-
-  if (match && match[1]) {
-    return match[1];
-  }
-
-  return null;
-};
+import { getMessageCreatedBy } from '../slack-ui-builder';
 
 export class MessageMenuActionHandler {
   public handle = async ({
