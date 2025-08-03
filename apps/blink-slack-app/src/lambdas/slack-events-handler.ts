@@ -64,6 +64,8 @@ const app = new App({
   receiver: expressReceiverObject,
 });
 
+// TODO: add global error handler for the app
+
 // Configure the app with commands, actions, and events
 ((app: App<StringIndexed>) => {
   // Configure commands
