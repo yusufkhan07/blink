@@ -14,6 +14,7 @@ import { UserMessageRepository } from '../repositories/user-message.repository';
 import { SlackOAuthTokensRepository } from '../repositories/slack-oAuth-token.repository';
 import { Config } from '../config';
 import { SlackUiBuilder } from '../slack-ui-builder';
+import { MetricsRepository } from '../repositories/metrics.repository';
 
 const config = new Config();
 
@@ -30,12 +31,14 @@ const userMessageExpirationSettingsRepository =
 const userMessageRepository = new UserMessageRepository(
   config.tableNames.userMessagesTable
 );
+const metricsRepository = new MetricsRepository(config.tableNames.metricsTable);
 
 // Handlers
 const blinkCommandHandler = new BlinkCommandHandler(
   config.messageExpirationHandlerStateMachineArn,
   userMessageExpirationSettingsRepository,
   userMessageRepository,
+  metricsRepository,
   slackUiBuilder
 ).handle;
 const messageMenuActionHandler = new MessageMenuActionHandler().handle;

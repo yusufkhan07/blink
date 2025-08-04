@@ -13,6 +13,7 @@ import { UserMessageExpirationSettingsRepository } from '../repositories/user-me
 import { parseExpirationToSeconds } from '../utils/parseExpirationToSeconds';
 import { UserMessageRepository } from '../repositories/user-message.repository';
 import { SlackUiBuilder } from '../slack-ui-builder';
+import { MetricsRepository } from '../repositories/metrics.repository';
 
 // TODO: Update FAQs to include info about Blink in DMs
 
@@ -23,6 +24,7 @@ export class BlinkCommandHandler {
     private readonly messageExpirationHandlerStateMachineArn: string,
     private readonly userMessageExpirationSettingsRepository: UserMessageExpirationSettingsRepository,
     private readonly userMessageRepository: UserMessageRepository,
+    private readonly metricsRepository: MetricsRepository,
     private readonly slackUiBuilder: SlackUiBuilder
   ) {}
 
@@ -129,8 +131,14 @@ export class BlinkCommandHandler {
         expirationTimeInSecs,
       });
 
+      await this.metricsRepository.incrementDirectMessageCount({
+        id: command.team_id,
+        name: command.team_domain,
+      });
+
       return;
     }
+
     try {
       logger.info('Creating new message');
 
@@ -178,5 +186,10 @@ export class BlinkCommandHandler {
         }
       }
     }
+
+    await this.metricsRepository.incrementChannelMessageCount({
+      id: command.team_id,
+      name: command.team_domain,
+    });
   };
 }
