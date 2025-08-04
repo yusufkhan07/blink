@@ -5,12 +5,19 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 export class SlackOAuthTokensRepository {
   constructor(private readonly tableName: string) {}
 
-  storeInstallation = async (installation: Installation) => {
+  storeInstallation = async (
+    installation: Installation,
+    installedBy?: object
+  ) => {
     const params = {
       TableName: this.tableName,
       Item: {
         teamId: installation.team.id,
         ...installation,
+        user: {
+          ...installation.user,
+          ...installedBy,
+        },
       },
     };
 

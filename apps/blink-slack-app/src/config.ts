@@ -6,6 +6,7 @@ export class Config {
     slackOAuthTokensTable: string;
     userMessageExpirationSettingsTable: string;
     userMessagesTable: string;
+    metricsTable: string;
   };
   public readonly messageExpirationHandlerStateMachineArn: string;
 
@@ -18,6 +19,7 @@ export class Config {
       userMessageExpirationSettingsTable:
         process.env.USER_MESSAGE_EXPIRATION_SETTINGS_TABLENAME,
       userMessagesTable: process.env.USER_MESSAGES_TABLENAME,
+      metricsTable: process.env.METRICS_TABLENAME,
     };
     this.messageExpirationHandlerStateMachineArn =
       process.env.MessageExpirationHandlerStateMachineArn;

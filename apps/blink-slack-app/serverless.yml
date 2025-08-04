@@ -13,6 +13,7 @@ provider:
     SLACK_OAUTHTOKENS_TABLENAME: ${self:resources.Outputs.SlackOAuthTokensTableName.Value}
     USER_MESSAGE_EXPIRATION_SETTINGS_TABLENAME: ${self:resources.Outputs.UserMessageExpirationSettingsTableName.Value}
     USER_MESSAGES_TABLENAME: ${self:resources.Outputs.UserMessagesTableName.Value}
+    METRICS_TABLENAME: ${self:resources.Outputs.MetricsTableName.Value}
   iam:
     role:
       statements:
@@ -33,6 +34,7 @@ provider:
             - !GetAtt SlackOAuthTokensTable.Arn
             - !GetAtt UserMessageExpirationSettingsTable.Arn
             - !GetAtt UserMessagesTable.Arn
+            - !GetAtt MetricsTable.Arn
 
 functions:
   slack-install-handler:
@@ -117,6 +119,24 @@ resources:
           AttributeName: expire_at
           Enabled: true
 
+    MetricsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: MetricsTable-${opt:stage}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: sortKey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: sortKey
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
   Outputs:
     MessageExpirationHandlerStateMachine:
       Description: The ARN of the StateMachine which hides expired slack messages
@@ -131,6 +151,9 @@ resources:
     UserMessagesTableName:
       Value:
         Ref: UserMessagesTable
+    MetricsTableName:
+      Value:
+        Ref: MetricsTable
 
 plugins:
   - serverless-export-env

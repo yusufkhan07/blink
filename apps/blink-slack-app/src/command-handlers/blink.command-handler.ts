@@ -3,6 +3,7 @@ import { Logger, WebClient } from '@slack/web-api';
 import { MessageExpirationHandlerStateMachineInput } from '../state-machines/types';
 import {
   AllMiddlewareArgs,
+  RespondFn,
   SlackCommandMiddlewareArgs,
   SlashCommand,
   StringIndexed,
@@ -13,6 +14,7 @@ import { UserMessageExpirationSettingsRepository } from '../repositories/user-me
 import { parseExpirationToSeconds } from '../utils/parseExpirationToSeconds';
 import { UserMessageRepository } from '../repositories/user-message.repository';
 import { SlackUiBuilder } from '../slack-ui-builder';
+import { MetricsRepository } from '../repositories/metrics.repository';
 
 // TODO: Update FAQs to include info about Blink in DMs
 
@@ -23,6 +25,7 @@ export class BlinkCommandHandler {
     private readonly messageExpirationHandlerStateMachineArn: string,
     private readonly userMessageExpirationSettingsRepository: UserMessageExpirationSettingsRepository,
     private readonly userMessageRepository: UserMessageRepository,
+    private readonly metricsRepository: MetricsRepository,
     private readonly slackUiBuilder: SlackUiBuilder
   ) {}
 
@@ -98,8 +101,15 @@ export class BlinkCommandHandler {
 
     await respond({
       response_type: 'in_channel',
-      text: 'Blink is not available in direct messages. Please use it in a public/private channel.',
+      text: `:dash: <@${command.user_id}> sent this disappearing message using blink`,
       blocks,
+    });
+  }
+
+  private async handleError(respond: RespondFn) {
+    await respond({
+      response_type: 'ephemeral',
+      text: 'An error occurred while processing your request. Please contact support at hello@bytedevs.com or try reinstalling the app.',
     });
   }
 
@@ -123,14 +133,24 @@ export class BlinkCommandHandler {
       : constants.defaultMessageExpiryInSecs;
 
     if (command.channel_name === 'directmessage') {
-      await this.postNewMessageInDirectMessage({
-        command,
-        respond,
-        expirationTimeInSecs,
+      try {
+        await this.postNewMessageInDirectMessage({
+          command,
+          respond,
+          expirationTimeInSecs,
+        });
+      } catch (err) {
+        return this.handleError(respond);
+      }
+
+      await this.metricsRepository.incrementDirectMessageCount({
+        id: command.team_id,
+        name: command.team_domain,
       });
 
       return;
     }
+
     try {
       logger.info('Creating new message');
 
@@ -177,6 +197,13 @@ export class BlinkCommandHandler {
           return;
         }
       }
+
+      return this.handleError(respond);
     }
+
+    await this.metricsRepository.incrementChannelMessageCount({
+      id: command.team_id,
+      name: command.team_domain,
+    });
   };
 }

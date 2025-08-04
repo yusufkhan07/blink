@@ -1,4 +1,5 @@
 import {
+  App,
   ExpressReceiver,
   Installation,
   InstallationQuery,
@@ -13,11 +14,32 @@ import { SlackOAuthTokensRepository } from './repositories/slack-oAuth-token.rep
 
 class DynamoDbInstallationStore implements InstallationStore {
   constructor(
-    private readonly slackOAuthTokensRepository: SlackOAuthTokensRepository
+    private readonly slackOAuthTokensRepository: SlackOAuthTokensRepository,
+    private readonly signingSecret: string
   ) {}
 
-  storeInstallation = (installation: Installation): Promise<void> => {
-    return this.slackOAuthTokensRepository.storeInstallation(installation);
+  private async getInstallerInfo(
+    installation: Installation<'v1' | 'v2', boolean>
+  ) {
+    try {
+      const app = new App({
+        signingSecret: this.signingSecret,
+        token: installation.bot?.token ?? '',
+      });
+
+      return (await app.client.users.info({ user: installation.user.id })).user;
+    } catch {
+      return {};
+    }
+  }
+
+  storeInstallation = async (installation: Installation): Promise<void> => {
+    const installer = await this.getInstallerInfo(installation);
+
+    return this.slackOAuthTokensRepository.storeInstallation(
+      installation,
+      installer
+    );
   };
 
   fetchInstallation = async (installQuery: InstallationQuery<boolean>) => {
@@ -48,7 +70,8 @@ export const expressReceiver = (
   }
 ) => {
   const installationStore = new DynamoDbInstallationStore(
-    slackOAuthTokensRepository
+    slackOAuthTokensRepository,
+    signingSecret
   );
 
   return new ExpressReceiver({
