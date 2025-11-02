@@ -1,7 +1,19 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/auth.service';
+
 export function LandingPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If already authenticated, redirect to dashboard
+    if (authService.isAuthenticated()) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
   const handleSignIn = () => {
-    // Will be implemented in Task 1.4
-    globalThis.location.href = '/dashboard';
+    authService.signInWithSlack();
   };
 
   return (

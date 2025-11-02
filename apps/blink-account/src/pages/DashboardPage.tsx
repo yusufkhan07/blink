@@ -1,11 +1,55 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { authService, SlackUser } from '../services/auth.service';
 
 export function DashboardPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState<SlackUser | null>(null);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const currentUser = authService.getCurrentUser();
+    if (!currentUser) {
+      navigate('/');
+      return;
+    }
+    setUser(currentUser);
+  }, [navigate]);
 
   const handleSignOut = () => {
+    authService.signOut();
     navigate('/');
   };
+
+  if (!user) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div
+          style={{
+            width: '60px',
+            height: '60px',
+            border: '4px solid #e0e0e0',
+            borderTop: '4px solid #5865F2',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+          }}
+        />
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: '#f5f5f5' }}>
@@ -22,24 +66,45 @@ export function DashboardPage() {
         <h1 style={{ fontSize: '1.5rem', color: '#333', margin: 0 }}>
           Blink Account
         </h1>
-        <button
-          onClick={handleSignOut}
-          style={{
-            padding: '8px 16px',
-            background: '#f0f0f0',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontSize: '14px',
-          }}
-        >
-          Sign Out
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {user.avatar && (
+            <img
+              src={user.avatar}
+              alt={user.name}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+              }}
+            />
+          )}
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>
+              {user.name}
+            </div>
+            <div style={{ fontSize: '12px', color: '#666' }}>
+              {user.teamName}
+            </div>
+          </div>
+          <button
+            onClick={handleSignOut}
+            style={{
+              padding: '8px 16px',
+              background: '#f0f0f0',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
       </header>
 
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
         <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#333' }}>
-          Welcome back!
+          Welcome back, {user.name}!
         </h2>
         <p style={{ color: '#666', marginBottom: '2rem' }}>
           Manage your Blink messages and settings
