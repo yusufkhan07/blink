@@ -1,12 +1,16 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.scss';
-import NxWelcome from './nx-welcome';
+import { Route, Routes } from 'react-router-dom';
+import { LandingPage } from '../pages/LandingPage';
+import { AuthCallbackPage } from '../pages/AuthCallbackPage';
+import { DashboardPage } from '../pages/DashboardPage';
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="blink-account" />
-    </div>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      {/* TODO: do we need this component? Remove if not needed */}
+      <Route path="/auth/callback" element={<AuthCallbackPage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
+    </Routes>
   );
 }
 

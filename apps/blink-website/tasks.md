@@ -31,29 +31,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] Create new app: `apps/blink-dashboard`
-- [ ] Set up React + TypeScript + Tailwind
-- [ ] Configure routing with React Router
-- [ ] Create basic layout using shared components
-- [ ] Add routes: `/`, `/auth/callback`, `/dashboard`
-- [ ] Set up build process and development server
-
-**File Structure:**
-
-```
-apps/blink-dashboard/
-├── src/
-│   ├── pages/
-│   │   ├── LandingPage.tsx
-│   │   ├── DashboardPage.tsx
-│   │   └── AuthCallbackPage.tsx
-│   ├── components/
-│   ├── services/
-│   ├── types/
-│   └── app.tsx
-├── package.json
-└── vite.config.ts
-```
+- [x] Create new app: `apps/blink-dashboard` (Already created but named blink-account instead)
+- [x] Set up React Router.
+- [x] Add routes: `/`, `/auth/callback`, `/dashboard`
 
 **Routes:**
 
