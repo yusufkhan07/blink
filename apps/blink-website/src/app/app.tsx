@@ -1,19 +1,20 @@
 import { useEffect } from 'react';
-import { initializeApp } from "firebase/app";
-import { getAnalytics, logEvent } from "firebase/analytics";
+import { initializeApp } from 'firebase/app';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import { Routes, Route } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Home } from '../pages/Home';
 import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { ContactUs } from '../pages/ContactUs';
+import { Dashboard } from '../pages/Dashboard';
 import '../styles/global.scss';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCTvJErwf7LlxhDU-SyZuc4XdnVG8uTXyw",
-  authDomain: "bytedevs-57983.firebaseapp.com",
-  projectId: "bytedevs-57983",
-  appId: "1:318533323510:web:4853e8a22e675242373ad7",
+  apiKey: 'AIzaSyCTvJErwf7LlxhDU-SyZuc4XdnVG8uTXyw',
+  authDomain: 'bytedevs-57983.firebaseapp.com',
+  projectId: 'bytedevs-57983',
+  appId: '1:318533323510:web:4853e8a22e675242373ad7',
 };
 
 // Initialize Firebase
@@ -27,17 +28,18 @@ export function App() {
   }, []);
 
   return (
-      <div className="flex flex-col min-h-screen bg-background text-text">
-        <Header />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/contact" element={<ContactUs />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+    <div className="flex flex-col min-h-screen bg-background text-text">
+      <Header />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
 }
 

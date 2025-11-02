@@ -1,51 +1,15 @@
 # Blink Dashboard - User Authentication & Workspace Detection
 
-## Task 1.1: Create Shared UI Components Library
-
-**Description:** Extract and create reusable components from the main website to ensure design consistency across apps.
-
-**Acceptance Criteria:**
-
-- [ ] Create `apps/shared-ui` package in the monorepo
-- [ ] Extract common components: Button, Header, Footer, Layout
-- [ ] Export Tailwind config and design tokens
-- [ ] Update main website to use shared components
-- [ ] Document component usage with Storybook (optional)
-
-**Files to Create:**
-
-```
-apps/shared-ui/
-├── src/
-│   ├── components/
-│   │   ├── Button/Button.tsx
-│   │   ├── Header/Header.tsx
-│   │   ├── Footer/Footer.tsx
-│   │   └── Layout/Layout.tsx
-│   ├── styles/
-│   │   └── globals.css
-│   └── index.ts
-├── package.json
-└── tailwind.config.js
-```
-
-**Dependencies:**
-
-- React, TypeScript, Tailwind CSS
-- Same versions as main website
-
----
-
 ## Task 1.2: Add Login Button to Main Website
 
 **Description:** Add a "Dashboard" or "Sign In" button to the main Blink website header.
 
 **Acceptance Criteria:**
 
-- [ ] Add login button to website header
-- [ ] Button links to `/dashboard` route
-- [ ] Style matches existing website design
-- [ ] Responsive design for mobile/desktop
+- [x] Add login button to website header
+- [x] Button links to `/dashboard` route
+- [x] Style matches existing website design
+- [x] Responsive design for mobile/desktop
 - [ ] Update navigation to show login state (if user is signed in)
 
 **Files to Modify:**
