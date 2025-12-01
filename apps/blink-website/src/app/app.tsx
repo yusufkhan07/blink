@@ -7,7 +7,7 @@ import { Footer } from '../components/Footer';
 import { Home } from '../pages/Home';
 import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { ContactUs } from '../pages/ContactUs';
-import '../styles/global.scss';
+import '../styles.css';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTvJErwf7LlxhDU-SyZuc4XdnVG8uTXyw",
@@ -27,7 +27,7 @@ export function App() {
   }, []);
 
   return (
-      <div className="flex flex-col min-h-screen bg-background text-text">
+      <div className="flex flex-col min-h-screen bg-white">
         <Header />
         <main className="flex-1">
           <Routes>
