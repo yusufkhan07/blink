@@ -3,7 +3,11 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { Navbar } from '../components/Navbar';
 import { Hero } from '../components/Hero';
+import { Services } from '../components/Services';
+import { Process } from '../components/Process';
 import { ProjectCard } from '../components/ProjectCard';
+import { About } from '../components/About';
+import { Contact } from '../components/Contact';
 import { Footer } from '../components/Footer';
 
 const firebaseConfig = {
@@ -28,7 +32,11 @@ export function App() {
       <Navbar />
       <main>
         <Hero />
+        <Services />
+        <Process />
         <ProjectCard />
+        <About />
+        <Contact />
       </main>
       <Footer />
     </div>

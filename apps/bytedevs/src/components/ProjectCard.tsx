@@ -9,9 +9,6 @@ export const ProjectCard = () => {
           <h2 className="text-4xl md:text-6xl font-bold mb-4">Selected Work</h2>
           <p className="text-zinc-400 text-lg">Showcasing our finest digital craftsmanship.</p>
         </div>
-        <button className="hidden md:flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
-          View all projects <ArrowUpRightIcon className="w-4 h-4" />
-        </button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">

@@ -28,9 +28,9 @@ export const Navbar = () => {
             </div>
             
             <div className="flex items-center gap-4">
-              <button className="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded-full text-sm font-semibold bg-white text-black hover:bg-zinc-200 transition-colors shadow-lg shadow-white/10">
+              <a href="#contact" className="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded-full text-sm font-semibold bg-white text-black hover:bg-zinc-200 transition-colors shadow-lg shadow-white/10">
                 Start Project
-              </button>
+              </a>
 
               <div className="flex md:hidden">
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/10 focus:outline-none">
@@ -58,9 +58,9 @@ export const Navbar = () => {
                 </Disclosure.Button>
               ))}
               <div className="pt-4 pb-2">
-                <button className="w-full py-3 rounded-xl font-semibold bg-white text-black">
+                <a href="#contact" className="block w-full py-3 rounded-xl font-semibold bg-white text-black text-center">
                   Start Project
-                </button>
+                </a>
               </div>
             </div>
           </Disclosure.Panel>
