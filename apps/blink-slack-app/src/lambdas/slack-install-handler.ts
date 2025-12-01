@@ -17,6 +17,4 @@ const expressReceiverObject = expressReceiver(slackOAuthTokensRepository, {
   clientSecret: config.slackClientSecret,
 });
 
-// Called on `slack/install` to show an install button
-// Called on `slack/oauth_redirect` to handle the OAuth redirect (success/failure).
 module.exports.handler = serverless(expressReceiverObject.app);
