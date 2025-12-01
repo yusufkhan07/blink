@@ -22,7 +22,7 @@ export const ProjectCard = () => {
                 <span className="px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/20">
                   SaaS Product
                 </span>
-                <span className="text-zinc-500 text-sm">2024</span>
+                <span className="text-zinc-500 text-sm">2025</span>
               </div>
               
               <h3 className="text-3xl md:text-5xl font-bold mb-4 group-hover:text-indigo-200 transition-colors">Blink Slack App</h3>
@@ -73,18 +73,18 @@ export const ProjectCard = () => {
             </div>
           </div>
 
-          <div className="flex-1 rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-700 p-8 flex flex-col justify-center items-center text-center group cursor-pointer hover:scale-[1.02] transition-transform">
-            <h4 className="text-2xl font-bold mb-2">View Live Project</h4>
-            <p className="text-indigo-200 mb-6">Experience Blink in action</p>
-            <a 
-              href="https://blink.bytedevs.com" 
-              target="_blank" 
-              rel="noreferrer"
-              className="w-12 h-12 rounded-full bg-white text-indigo-600 flex items-center justify-center group-hover:rotate-45 transition-transform"
-            >
+          <a 
+            href="https://blink.bytedevs.com" 
+            target="_blank" 
+            rel="noreferrer"
+            className="flex-1 rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-700 p-8 flex flex-col justify-center items-center text-center group cursor-pointer hover:scale-[1.02] transition-transform shadow-xl dark:shadow-none"
+          >
+            <h4 className="text-2xl font-bold mb-2 text-white">View Live Project</h4>
+            <p className="text-indigo-100 mb-6">Experience Blink in action</p>
+            <div className="w-12 h-12 rounded-full bg-white text-indigo-600 flex items-center justify-center group-hover:rotate-45 transition-transform">
               <ArrowUpRightIcon className="w-6 h-6" />
-            </a>
-          </div>
+            </div>
+          </a>
         </div>
       </div>
     </section>

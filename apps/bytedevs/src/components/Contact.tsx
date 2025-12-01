@@ -16,8 +16,11 @@ export const Contact = () => {
             </span>
           </h2>
           
-          <p className="text-xl text-zinc-300 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-zinc-300 mb-4 max-w-2xl mx-auto">
             Let's discuss how we can help you build something extraordinary.
+          </p>
+          <p className="text-indigo-400 font-medium mb-12">
+            Free introductory call to discuss your needs.
           </p>
 
           <div className="flex flex-col items-center gap-8">

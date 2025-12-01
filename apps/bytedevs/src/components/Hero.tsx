@@ -9,7 +9,7 @@ export const Hero = () => {
       <div className="container mx-auto px-8 relative z-10 animate-fade-in">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-sm">
           <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-          <span className="text-sm font-medium text-zinc-300">Accepting new projects for Q4 2026</span>
+          <span className="text-sm font-medium text-zinc-300">Accepting new projects for 2026</span>
         </div>
 
         <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold mb-8 tracking-tighter leading-[0.9]">
@@ -19,8 +19,9 @@ export const Hero = () => {
           </span>
         </h1>
         
-        <p className="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
-          ByteDevs is a premium web development agency transforming ambitious ideas into <span className="text-white font-medium">stunning, high-performance</span> digital experiences.
+        <p className="text-xl md:text-2xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+          We build high-performance web applications that scale. <br />
+          <span className="text-indigo-400 font-medium">Idea to MVP in less than 8 weeks.</span>
         </p>
         
         <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
