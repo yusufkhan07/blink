@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { Contact } from './contact/contact';
-import styles from './app.module.scss';
+import { getAnalytics, logEvent } from "firebase/analytics";
+import { Navbar } from '../components/Navbar';
+import { Hero } from '../components/Hero';
+import { ProjectCard } from '../components/ProjectCard';
+import { Footer } from '../components/Footer';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTvJErwf7LlxhDU-SyZuc4XdnVG8uTXyw",
@@ -12,19 +15,22 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-getAnalytics(app);
+const analytics = getAnalytics(app);
 
 export function App() {
+  useEffect(() => {
+    console.log('App initialized');
+    logEvent(analytics, 'app_opened');
+  }, []);
+
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <h1 className={styles.title}>ByteDevs.com</h1>
-        <h2 className={styles.subtitle}>Coming Soon</h2>
-        <p className={styles.description}>
-          We’re building something awesome.<br />Stay tuned!
-        </p>
-        <Contact />
-      </div>
+    <div className="app">
+      <Navbar />
+      <main>
+        <Hero />
+        <ProjectCard />
+      </main>
+      <Footer />
     </div>
   );
 }
