@@ -1,1 +1,131 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+@theme {
+  /* Unique Blink Colors - Coral & Turquoise */
+  --color-coral-50: #fff5f5;
+  --color-coral-100: #ffe3e3;
+  --color-coral-200: #ffc9c9;
+  --color-coral-300: #ffa8a8;
+  --color-coral-400: #ff8787;
+  --color-coral-500: #ff6b6b;
+  --color-coral-600: #fa5252;
+  --color-coral-700: #f03e3e;
+  --color-coral-800: #e03131;
+  --color-coral-900: #c92a2a;
+  
+  --color-turquoise-50: #e6fcf5;
+  --color-turquoise-100: #c3fae8;
+  --color-turquoise-200: #96f2d7;
+  --color-turquoise-300: #63e6be;
+  --color-turquoise-400: #38d9a9;
+  --color-turquoise-500: #4ecdc4;
+  --color-turquoise-600: #12b886;
+  --color-turquoise-700: #0ca678;
+  --color-turquoise-800: #099268;
+  --color-turquoise-900: #087f5b;
+  
+  --color-yellow-50: #fff9db;
+  --color-yellow-100: #fff3bf;
+  --color-yellow-200: #ffec99;
+  --color-yellow-300: #ffe066;
+  --color-yellow-400: #ffd43b;
+  --color-yellow-500: #ffe66d;
+  --color-yellow-600: #fab005;
+  --color-yellow-700: #f59f00;
+  --color-yellow-800: #f08c00;
+  --color-yellow-900: #e67700;
+  
+  --font-family-display: 'Nunito', 'Inter', system-ui, sans-serif;
+  
+  --animate-fade-out: fadeOut 2s ease-out forwards;
+  --animate-pulse-slow: pulseSlow 3s ease-in-out infinite;
+  --animate-slide-in-right: slideInRight 0.6s ease-out;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes pulseSlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@keyframes slideInRight {
+  0% { transform: translateX(100px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
+  font-weight: 800;
+}
+
+/* Unique Button Styles */
+.btn-coral {
+  @apply inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-white bg-coral-500 hover:bg-coral-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105;
+}
+
+.btn-outline-dashed {
+  @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-turquoise-700 border-2 border-dashed border-turquoise-500 hover:bg-turquoise-50 transition-all duration-200;
+}
+
+.btn-slack {
+  @apply inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold text-white bg-[#4A154B] hover:bg-[#611f69] transition-all duration-200 shadow-md;
+}
+
+/* Bento Box Grid */
+.bento-grid {
+  @apply grid gap-4 auto-rows-[200px];
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.bento-box {
+  @apply bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-turquoise-400 transition-all duration-300 hover:shadow-lg;
+}
+
+.bento-box-large {
+  @apply col-span-2 row-span-2;
+}
+
+.bento-box-tall {
+  @apply row-span-2;
+}
+
+.bento-box-wide {
+  @apply col-span-2;
+}
+
+/* Message Bubble */
+.message-bubble {
+  @apply bg-white rounded-2xl rounded-bl-sm p-4 shadow-md border-2 border-gray-200 relative;
+}
+
+.message-bubble::before {
+  content: '';
+  @apply absolute -bottom-2 left-4 w-4 h-4 bg-white border-l-2 border-b-2 border-gray-200 transform rotate-45;
+}
+
+/* Timer Badge */
+.timer-badge {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100 border-2 border-yellow-400 text-yellow-900 font-bold;
+}
+
+/* Diagonal Split */
+.diagonal-split {
+  clip-path: polygon(0 0, 60% 0, 50% 100%, 0 100%);
+}
+
+/* Utilities */
+.text-gradient-coral {
+  @apply bg-gradient-to-r from-coral-500 to-coral-700 bg-clip-text text-transparent;
+}
+
+.section-padding {
+  @apply py-12 md:py-20;
+}
