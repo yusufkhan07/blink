@@ -1,15 +1,15 @@
-import { FaSlack, FaClock, FaShieldAlt, FaLock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaSlack, FaClock, FaShieldAlt, FaLock, FaCheckCircle, FaTimesCircle, FaArrowRight } from 'react-icons/fa';
 import { SLACK_OAUTH_URL } from '../config';
 
 export function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section - Split Screen Design */}
-      <section className="relative min-h-[90vh] overflow-hidden">
+      <section className="relative pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden">
         {/* Left Side - Content */}
-        <div className="relative z-10 container mx-auto px-4 py-20 max-w-7xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 animate-slide-in-right">
+        <div className="relative z-10 container mx-auto px-4 max-w-7xl">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-6 animate-slide-in-right">
               {/* Timer Badge */}
               <div className="timer-badge inline-flex">
                 <FaClock className="w-5 h-5" />
@@ -17,29 +17,32 @@ export function Home() {
               </div>
 
               {/* Headline */}
-              <h1 className="text-5xl md:text-7xl font-black leading-tight">
-                Send Secrets.<br />
-                <span className="text-gradient-coral">Not Receipts.</span>
+              <h1 className="text-4xl md:text-6xl font-black leading-tight">
+                Share Sensitive Info.<br />
+                <span className="text-gradient-coral">Then It Disappears.</span>
               </h1>
 
               {/* Subheadline */}
-              <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-                Blink lets you share sensitive info in Slack that automatically disappears. No screenshots, no traces, no worries.
+              <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
+                Send passwords, API keys, and secrets in Slack that automatically delete after 24 hours. No permanent record in chat history.
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a href={SLACK_OAUTH_URL} className="btn-slack gap-2">
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <a
+                  href="https://slack.com/oauth/v2/authorize?scope=chat:write,chat:write.public,commands,chat:write.customize,users:read&client_id=819140066320.9092531390403"
+                  className="btn-slack gap-2 shadow-xl hover:shadow-2xl hover:-translate-y-1"
+                >
                   <FaSlack className="w-5 h-5" />
                   Add to Slack
                 </a>
                 <a href="#how-it-works" className="btn-outline-dashed">
-                  See How It Works →
+                  See How It Works <FaArrowRight className="w-3 h-3" />
                 </a>
               </div>
 
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+              {/* Trust Badges */}
+              <div className="flex items-center gap-6 pt-4 text-sm font-semibold text-gray-500">
                 <div className="flex items-center gap-2">
                   <FaShieldAlt className="text-turquoise-500" />
                   <span>End-to-end encrypted</span>
@@ -51,46 +54,20 @@ export function Home() {
               </div>
             </div>
 
-            {/* Right Side - Visual */}
-            <div className="relative">
-              {/* Animated Message Bubbles */}
-              <div className="space-y-4">
-                <div className="message-bubble ml-auto max-w-md">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-coral-500 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-sm mb-1">You</p>
-                      <p className="text-gray-700">Here's the password: <code className="bg-gray-100 px-2 py-1 rounded">secret123</code></p>
-                      <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                        <FaClock />
-                        <span>Expires in 23h 59m</span>
-                      </div>
-                    </div>
-                  </div>
+            {/* Right Side - Lifecycle Visual */}
+            <div className="relative flex justify-center items-center">
+              {/* Final Lifecycle Illustration */}
+              <div className="relative z-10 transform transition-transform hover:scale-[1.02] duration-500">
+                <img
+                  src="/blink_lifecycle_clean.png"
+                  alt="Blink message lifecycle in Slack: Send Secret -> Auto-Delete"
+                  className="relative w-full max-w-lg rounded-xl shadow-2xl border border-gray-200/50"
+                />
+                
+                {/* Slack Icon Overlay */}
+                <div className="absolute -top-4 -right-4 bg-white p-2 rounded-xl shadow-lg border border-gray-100 animate-float">
+                  <FaSlack className="w-8 h-8 text-[#4A154B]" />
                 </div>
-
-                <div className="message-bubble max-w-sm opacity-70">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-turquoise-500 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-sm mb-1">Teammate</p>
-                      <p className="text-gray-700">Got it, thanks! 👍</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Fading Message Indicator */}
-                <div className="message-bubble max-w-md ml-auto bg-gray-100 border-dashed opacity-50">
-                  <div className="flex items-center gap-3">
-                    <FaClock className="text-gray-400 w-5 h-5" />
-                    <p className="text-gray-500 italic">This message has expired and been deleted</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Timer */}
-              <div className="absolute -top-8 -right-8 text-8xl opacity-10 animate-pulse-slow">
-                ⏱️
               </div>
             </div>
           </div>
@@ -108,9 +85,9 @@ export function Home() {
             <p className="text-xl text-gray-600">Privacy-first messaging for modern teams</p>
           </div>
 
-          <div className="bento-grid">
-            {/* Large Feature */}
-            <div className="bento-box bento-box-large bg-gradient-to-br from-coral-50 to-coral-100 flex flex-col justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-auto">
+            {/* Large Feature - Spans 2 columns */}
+            <div className="md:col-span-2 bento-box bg-gradient-to-br from-coral-50 to-coral-100 flex flex-col justify-center min-h-[280px]">
               <div className="text-6xl mb-4">💬</div>
               <h3 className="text-2xl font-bold mb-3">Self-Destructing Messages</h3>
               <p className="text-gray-700 text-lg">
@@ -119,25 +96,29 @@ export function Home() {
             </div>
 
             {/* Medium Feature */}
-            <div className="bento-box bg-turquoise-50">
-              <div className="text-4xl mb-3">🔒</div>
-              <h3 className="text-xl font-bold mb-2">Zero Storage</h3>
-              <p className="text-gray-700">
-                We never store your messages. What we don't have, we can't leak.
-              </p>
+            <div className="bento-box bg-turquoise-50 flex flex-col justify-between min-h-[280px]">
+              <div>
+                <div className="text-4xl mb-3">🔒</div>
+                <h3 className="text-xl font-bold mb-2">Zero Storage</h3>
+                <p className="text-gray-700">
+                  We never store your messages. What we don't have, we can't leak.
+                </p>
+              </div>
             </div>
 
             {/* Medium Feature */}
-            <div className="bento-box bg-yellow-50">
-              <div className="text-4xl mb-3">⚡</div>
-              <h3 className="text-xl font-bold mb-2">Instant Setup</h3>
-              <p className="text-gray-700">
-                One click to add to Slack. Start sending secure messages immediately.
-              </p>
+            <div className="bento-box bg-yellow-50 flex flex-col justify-between min-h-[280px]">
+              <div>
+                <div className="text-4xl mb-3">⚡</div>
+                <h3 className="text-xl font-bold mb-2">Instant Setup</h3>
+                <p className="text-gray-700">
+                  One click to add to Slack. Start sending secure messages immediately.
+                </p>
+              </div>
             </div>
 
-            {/* Wide Feature */}
-            <div className="bento-box bento-box-wide bg-gradient-to-r from-turquoise-50 to-turquoise-100">
+            {/* Wide Feature - Spans 3 columns */}
+            <div className="md:col-span-3 bento-box bg-gradient-to-r from-turquoise-50 to-turquoise-100">
               <div className="flex items-center gap-4">
                 <div className="text-5xl">🛡️</div>
                 <div>
@@ -149,16 +130,16 @@ export function Home() {
               </div>
             </div>
 
-            {/* Tall Feature */}
-            <div className="bento-box bento-box-tall bg-gradient-to-b from-coral-50 to-yellow-50 flex flex-col justify-between">
+            {/* Compact Feature with Code */}
+            <div className="bento-box bg-gradient-to-b from-coral-50 to-yellow-50 flex flex-col justify-between">
               <div>
                 <div className="text-4xl mb-3">📱</div>
-                <h3 className="text-xl font-bold mb-2">Slack Native</h3>
-                <p className="text-gray-700 mb-4">
-                  Works seamlessly in your existing Slack workspace. No new apps to learn.
+                <h3 className="text-lg font-bold mb-2">Slack Native</h3>
+                <p className="text-gray-700 text-sm mb-3">
+                  Works seamlessly in your workspace.
                 </p>
               </div>
-              <code className="bg-gray-900 text-green-400 px-3 py-2 rounded-lg text-sm font-mono">
+              <code className="bg-gray-900 text-green-400 px-3 py-2 rounded-lg text-xs font-mono block">
                 /blink your message
               </code>
             </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaClock, FaTwitter, FaGithub } from 'react-icons/fa';
+import { FaClock } from 'react-icons/fa';
 
 export function Footer() {
   return (
@@ -17,14 +17,6 @@ export function Footer() {
             <p className="text-gray-600 max-w-md mb-4 leading-relaxed">
               Send secrets, not receipts. Secure, self-destructing messages for Slack teams.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="text-gray-400 hover:text-turquoise-500 transition-colors">
-                <FaTwitter className="w-6 h-6" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-turquoise-500 transition-colors">
-                <FaGithub className="w-6 h-6" />
-              </a>
-            </div>
           </div>
 
           {/* Links */}

@@ -7,6 +7,7 @@ import { Footer } from '../components/Footer';
 import { Home } from '../pages/Home';
 import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { ContactUs } from '../pages/ContactUs';
+import { ScrollToTop } from '../components/ScrollToTop';
 import '../styles.css';
 
 const firebaseConfig = {
@@ -28,6 +29,7 @@ export function App() {
 
   return (
       <div className="flex flex-col min-h-screen bg-white">
+        <ScrollToTop />
         <Header />
         <main className="flex-1">
           <Routes>

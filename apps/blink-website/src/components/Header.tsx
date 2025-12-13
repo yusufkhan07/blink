@@ -1,64 +1,82 @@
 import { Link, useLocation } from 'react-router-dom';
-import { FaClock } from 'react-icons/fa';
+import { FaSlack } from 'react-icons/fa';
 
 export function Header() {
   const { pathname } = useLocation();
   
   return (
-    <header className="bg-white border-b-2 border-gray-200 sticky top-0 z-50">
-      <nav className="container mx-auto flex items-center justify-between py-4 px-4 max-w-7xl">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 font-black text-gray-900 text-2xl hover:opacity-80 transition-opacity">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-coral-500 to-coral-700 flex items-center justify-center text-white shadow-lg">
-            <FaClock className="w-6 h-6" />
+    <header className="bg-gradient-to-r from-white via-coral-50 to-turquoise-50 border-b-2 border-dashed border-gray-300 sticky top-0 z-50 backdrop-blur-sm">
+      <nav className="container mx-auto px-4 py-4 max-w-7xl">
+        {/* Unique Vertical Stack Layout on Mobile, Asymmetric on Desktop */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+          {/* Logo Section - Uses actual icon */}
+          <Link to="/" className="flex items-center gap-3 font-black text-gray-900 hover:opacity-80 transition-opacity">
+            <img 
+              src="/icon.png" 
+              alt="Blink" 
+              className="w-10 h-10 object-contain"
+            />
+            <span className="font-display text-2xl">Blink</span>
+          </Link>
+
+          {/* Spacer */}
+          <div className="hidden md:block flex-1" />
+
+          {/* Navigation - Right Aligned Group */}
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
+            {/* Nav Links */}
+            <ul className="flex flex-wrap items-center gap-4 text-sm font-bold">
+              <li>
+                <a 
+                  href="#features" 
+                  className="text-gray-700 hover:text-coral-600 transition-colors underline decoration-2 decoration-transparent hover:decoration-coral-500 underline-offset-4"
+                >
+                  Features
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#how-it-works" 
+                  className="text-gray-700 hover:text-coral-600 transition-colors underline decoration-2 decoration-transparent hover:decoration-coral-500 underline-offset-4"
+                >
+                  How It Works
+                </a>
+              </li>
+              <li>
+                <Link 
+                  to="/privacy" 
+                  className={`transition-colors underline decoration-2 underline-offset-4 ${
+                    pathname === '/privacy' 
+                      ? 'text-coral-600 decoration-coral-500' 
+                      : 'text-gray-700 hover:text-coral-600 decoration-transparent hover:decoration-coral-500'
+                  }`}
+                >
+                  Privacy
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/contact" 
+                  className={`transition-colors underline decoration-2 underline-offset-4 ${
+                    pathname === '/contact' 
+                      ? 'text-coral-600 decoration-coral-500' 
+                      : 'text-gray-700 hover:text-coral-600 decoration-transparent hover:decoration-coral-500'
+                  }`}
+                >
+                  Contact
+                </Link>
+              </li>
+            </ul>
+
+            {/* CTA Button */}
+            <a
+              href="https://slack.com/oauth/v2/authorize?scope=chat:write,chat:write.public,commands,chat:write.customize,users:read&client_id=819140066320.9092531390403"
+              className="btn-slack gap-2 text-sm shadow-lg"
+            >
+              <FaSlack className="w-4 h-4" />
+              Add to Slack
+            </a>
           </div>
-          <span className="font-display">Blink</span>
-        </Link>
-
-        {/* Navigation */}
-        <ul className="hidden md:flex items-center gap-8 text-base font-semibold">
-          <li>
-            <a 
-              href="#features" 
-              className="text-gray-600 hover:text-coral-500 transition-colors"
-            >
-              Features
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#how-it-works" 
-              className="text-gray-600 hover:text-coral-500 transition-colors"
-            >
-              How It Works
-            </a>
-          </li>
-          <li>
-            <Link 
-              to="/privacy" 
-              className={pathname === '/privacy' ? 'text-coral-500' : 'text-gray-600 hover:text-coral-500 transition-colors'}
-            >
-              Privacy
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/contact" 
-              className={pathname === '/contact' ? 'text-coral-500' : 'text-gray-600 hover:text-coral-500 transition-colors'}
-            >
-              Contact
-            </Link>
-          </li>
-        </ul>
-
-        {/* CTA */}
-        <div className="flex items-center gap-4">
-          <a
-            href="https://slack.com/oauth/v2/authorize?scope=chat:write,chat:write.public,commands,chat:write.customize,users:read&client_id=819140066320.9092531390403"
-            className="btn-coral text-sm"
-          >
-            Add to Slack
-          </a>
         </div>
       </nav>
     </header>
