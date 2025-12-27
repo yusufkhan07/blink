@@ -38,6 +38,11 @@ export function Footer() {
                   Privacy Policy
                 </Link>
               </li>
+              <li>
+                <Link to="/tos" className="text-gray-600 hover:text-coral-500 transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
             </ul>
           </div>
 

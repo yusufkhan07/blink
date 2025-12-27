@@ -8,6 +8,7 @@ import { Home } from '../pages/Home';
 import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { ContactUs } from '../pages/ContactUs';
 import { ScrollToTop } from '../components/ScrollToTop';
+import { TermsOfService } from '../pages/TermsOfService';
 import '../styles.css';
 
 const firebaseConfig = {
@@ -35,6 +36,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/tos" element={<TermsOfService />} />
             <Route path="/contact" element={<ContactUs />} />
           </Routes>
         </main>

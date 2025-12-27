@@ -18,13 +18,13 @@ export function Home() {
 
               {/* Headline */}
               <h1 className="text-4xl md:text-6xl font-black leading-tight">
-                Share Sensitive Info.<br />
-                <span className="text-gradient-coral">Then It Disappears.</span>
+                Send secrets in Slack that <span className="text-gradient-coral">self-destruct.</span>
               </h1>
-
+              
               {/* Subheadline */}
-              <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
-                Send passwords, API keys, and secrets in Slack that automatically delete after 24 hours. No permanent record in chat history.
+              <p className="text-xl text-gray-600 leading-relaxed max-w-lg font-medium">
+                (passwords, tokens, one-time links).<br/>
+                No more pasting creds in chat.
               </p>
 
               {/* CTAs */}
@@ -88,20 +88,20 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-auto">
             {/* Large Feature - Spans 2 columns */}
             <div className="md:col-span-2 bento-box bg-gradient-to-br from-coral-50 to-coral-100 flex flex-col justify-center min-h-[280px]">
-              <div className="text-6xl mb-4">💬</div>
-              <h3 className="text-2xl font-bold mb-3">Self-Destructing Messages</h3>
+              <div className="text-6xl mb-4">💥</div>
+              <h3 className="text-2xl font-bold mb-3">It's Gone Forever</h3>
               <p className="text-gray-700 text-lg">
-                Share passwords, API keys, or sensitive data that automatically vanishes after 24 hours. No manual cleanup needed.
+                Once the timer hits zero, the message is wiped from Slack and our servers. No logs, no backups, no trace.
               </p>
             </div>
 
             {/* Medium Feature */}
             <div className="bento-box bg-turquoise-50 flex flex-col justify-between min-h-[280px]">
               <div>
-                <div className="text-4xl mb-3">🔒</div>
-                <h3 className="text-xl font-bold mb-2">Zero Storage</h3>
+                <div className="text-4xl mb-3">🔑</div>
+                <h3 className="text-xl font-bold mb-2">Share Keys Safely</h3>
                 <p className="text-gray-700">
-                  We never store your messages. What we don't have, we can't leak.
+                  Stop DMing API keys. Send them via Blink so they don't live in your chat history forever.
                 </p>
               </div>
             </div>
@@ -110,9 +110,9 @@ export function Home() {
             <div className="bento-box bg-yellow-50 flex flex-col justify-between min-h-[280px]">
               <div>
                 <div className="text-4xl mb-3">⚡</div>
-                <h3 className="text-xl font-bold mb-2">Instant Setup</h3>
+                <h3 className="text-xl font-bold mb-2">Zero Friction</h3>
                 <p className="text-gray-700">
-                  One click to add to Slack. Start sending secure messages immediately.
+                  No new logins. No external portals. Just type <code>/blink</code> right where you work.
                 </p>
               </div>
             </div>
@@ -124,7 +124,7 @@ export function Home() {
                 <div>
                   <h3 className="text-xl font-bold mb-2">End-to-End Encrypted</h3>
                   <p className="text-gray-700">
-                    Your messages are encrypted from the moment you send them until they're deleted. Not even we can read them.
+                    Your secrets are encrypted before they leave your device. We can't read them, and neither can Slack.
                   </p>
                 </div>
               </div>
@@ -133,14 +133,14 @@ export function Home() {
             {/* Compact Feature with Code */}
             <div className="bento-box bg-gradient-to-b from-coral-50 to-yellow-50 flex flex-col justify-between">
               <div>
-                <div className="text-4xl mb-3">📱</div>
-                <h3 className="text-lg font-bold mb-2">Slack Native</h3>
+                <div className="text-4xl mb-3">👨‍💻</div>
+                <h3 className="text-lg font-bold mb-2">Dev Friendly</h3>
                 <p className="text-gray-700 text-sm mb-3">
-                  Works seamlessly in your workspace.
+                  Built for engineering teams.
                 </p>
               </div>
               <code className="bg-gray-900 text-green-400 px-3 py-2 rounded-lg text-xs font-mono block">
-                /blink your message
+                /blink sk_live_...
               </code>
             </div>
           </div>
